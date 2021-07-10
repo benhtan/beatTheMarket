@@ -1,0 +1,16 @@
+<html>
+<script src='https://d3js.org/d3.v5.min.js'></script>
+<style>
+
+</style>
+<body onload='init()'>
+<svg width=300 height=300>
+</svg>
+<script>
+async function init() {
+
+
+}
+</script>
+</body>
+</html>
