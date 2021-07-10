@@ -1,14 +1,25 @@
 <html>
-<script src='https://d3js.org/d3.v5.min.js'></script>
-<style>
 
+<script src='https://d3js.org/d3.v5.min.js'></script>
+
+<style>
+svg {
+    border: 1px solid black;
+}
 </style>
+
 <body onload='init()'>
-<svg width=300 height=300>
-</svg>
+<!-- <svg width=viewport height=300>
+</svg> -->
+
 <script>
 async function init() {
+    // Get Data
+    const data = await d3.csv('https://raw.githubusercontent.com/benhtan/beatTheMarket/main/S%26P500%20Prices.csv')
+    console.log(data)
 
+    // Create svg canvas
+    d3.select("body").append("svg")
 
 }
 </script>
