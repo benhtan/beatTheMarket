@@ -44,11 +44,14 @@ async function init() {
             )
     })
 
-    console.log(data)
+    // console.log(data)
 
     // Create svg canvas
     const svgWidth = 1000
     const svgHeight = 500
+    const plotMargin = 50
+    const plotWidth = svgWidth - plotMargin*2
+    const plotHeight = svgHeight - plotMargin*2
 
     d3.select("body")
     .append("svg")
@@ -57,13 +60,16 @@ async function init() {
     .attr("id", "svg1")
 
     // Scale
-    var xScale = d3.scaleTime().domain( [new Date(1980, 0, 1), new Date(2020, 11, 31)] ).range([0,svgWidth])
-    var yScale = d3.scaleLinear().domain( [0.00, 4000.00] ).range( [svgHeight,0] )
+    var xScale = d3.scaleTime().domain( [new Date(1980, 0, 1), new Date(2020, 11, 31)] ).range([0, plotWidth])
+    var yScale = d3.scaleLinear().domain( [0.00, 4000.00] ).range( [plotHeight, 0] )
     // console.log(yScale(2000))
     // console.log( xScale(data[2000].date) )
     // console.log(data[2000].date)
 
+    // Plot
     d3.select("#svg1")
+    .append("g")
+    .attr("transform", `translate(${plotMargin},${plotMargin})`) 
     .selectAll("circle")
     .data(data)
     .enter()
@@ -71,6 +77,18 @@ async function init() {
     .attr( "cx", function (d) {return xScale( d.date )} )
     .attr( "cy", function (d) {return yScale( d.price )} )
     .attr("r",  0.5)
+
+    // Y Label
+    d3.select("svg")
+    .append("g")
+    .attr("transform", `translate(${plotMargin},${plotMargin})`)
+    .call( d3.axisLeft(yScale) )
+
+    // X Label
+    d3.select("svg")
+    .append("g")
+    .attr("transform", `translate(${plotMargin},${plotHeight + plotMargin})`)
+    .call( d3.axisBottom(xScale).tickFormat(d3.timeFormat("%Y")) )
 
 }
 </script>
