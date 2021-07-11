@@ -9,8 +9,9 @@ svg {
 </style>
 
 <body onload='init()'>
-<!-- <svg width=viewport height=300>
-</svg> -->
+<div id="tooltip" opacity=1></div>
+<div id="tooltip2" opacity=1></div>
+<div id="tooltip3" opacity=1></div>
 
 <script>
 async function init() {
@@ -77,6 +78,13 @@ async function init() {
     .attr( "cx", function (d) {return xScale( d.date )} )
     .attr( "cy", function (d) {return yScale( d.price )} )
     .attr("r",  0.5)
+
+    // Tool tip
+    d3.select("#svg1")
+    .on("mousemove", function(d) {
+        d3.select("#tooltip").html(d3.event.pageX + " " + d3.event.pageY)
+        d3.select("#tooltip3").html(xScale.invert(d3.event.pageX - plotMargin) + " " + yScale.invert(d3.event.pageY - plotMargin))
+    })
 
     // Y Label
     d3.select("svg")
