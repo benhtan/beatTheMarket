@@ -20,7 +20,8 @@ async function init() {
     // console.log(originalData)
 
     // Data cleanup. Format date to a date object, only use Open price as price
-    var data = []
+    const data = [] // Array of objects with key date and price
+    const dataDict = {} // Object with key actual date and price
     originalData.forEach( element => {
         monthDayYear = element["Date"].split("/")
 
@@ -36,19 +37,27 @@ async function init() {
             // console.log(monthDayYear[i])
         }
         // console.log(monthDayYear)
+        // console.log(`${element[" Open"]} ${parseFloat( element[" Open"] )}`)
+
+        let date = new Date( monthDayYear[2], monthDayYear[0] - 1, monthDayYear[1] )
+        let price = parseFloat( element[" Open"] )
+
+        dataDict[`${monthDayYear[2]}-${monthDayYear[0] - 1}-${monthDayYear[1]}`] = price
 
         data.push( 
             {
-                date: new Date( monthDayYear[2], monthDayYear[0] - 1, monthDayYear[1] ), 
-                price: parseFloat( element[" Open"] )
+                date: date, 
+                price: price
             }
-            )
+        )
     })
 
     // console.log(data)
+    console.log(dataDict)
+    // console.log(dataDict[new Date(2000, 1, 1)])
 
     // Create svg canvas
-    const svgWidth = 1500
+    const svgWidth = 1000
     const svgHeight = 500
     const plotMargin = 50
     const plotWidth = svgWidth - plotMargin*2
@@ -99,17 +108,20 @@ async function init() {
         let svgCoord = document.getElementById('svg1').getBoundingClientRect()
         d3.select("#tooltip").html(d3.event.pageX + " " + d3.event.pageY)
         d3.select("#tooltip2").html(parseInt(d3.event.pageX - svgCoord.x) + " " + parseInt(d3.event.pageY - svgCoord.y))
-        d3.select("#tooltip3").html(xScale.invert(d3.event.pageX - plotMargin - svgCoord.x) + " " + yScale.invert(d3.event.pageY - plotMargin - svgCoord.y))
+        let date = xScale.invert(parseInt(d3.event.pageX - svgCoord.x - plotMargin))
+        let dateFormatted = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
+        // console.log(dateFormatted)
+        d3.select("#tooltip3").html(`${date} ${dateFormatted} $${dataDict[dateFormatted]}`)
     })
 
     // Y Label
-    d3.select("svg")
+    d3.select("#svg1")
     .append("g")
     .attr("transform", `translate(${plotMargin},${plotMargin})`)
     .call( d3.axisLeft(yScale) )
 
     // X Label
-    d3.select("svg")
+    d3.select("#svg1")
     .append("g")
     .attr("transform", `translate(${plotMargin},${plotHeight + plotMargin})`)
     .call( d3.axisBottom(xScale).tickFormat(d3.timeFormat("%Y")) )
