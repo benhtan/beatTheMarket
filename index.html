@@ -106,11 +106,18 @@ async function init() {
     d3.select("#svg1")
     .on("mousemove", function(d) {
         let svgCoord = document.getElementById('svg1').getBoundingClientRect()
+
         d3.select("#tooltip").html(d3.event.pageX + " " + d3.event.pageY)
         d3.select("#tooltip2").html(parseInt(d3.event.pageX - svgCoord.x) + " " + parseInt(d3.event.pageY - svgCoord.y))
+
         let date = xScale.invert(parseInt(d3.event.pageX - svgCoord.x - plotMargin))
-        let dateFormatted = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
-        // console.log(dateFormatted)
+        let dateFormatted = formatDate(date)
+
+        if (formatDate(date) in dataDict === false) {
+            // console.log(dateFormatted)
+            findPrevTradingDay(dateFormatted, dataDict)
+        }
+        
         d3.select("#tooltip3").html(`${date} ${dateFormatted} $${dataDict[dateFormatted]}`)
     })
 
@@ -127,6 +134,27 @@ async function init() {
     .call( d3.axisBottom(xScale).tickFormat(d3.timeFormat("%Y")) )
 
 }
+
+function findPrevTradingDay(d, dataDict) {
+    const yearMonthDay = d.split("-")
+    var date = new Date(yearMonthDay[0], yearMonthDay[1], yearMonthDay[2])
+    for (let i = 0; i < 7; i++) {
+        date.setDate(date.getDate() - 1);
+        console.log(`${date}`)
+        if (formatDate(date) in dataDict) {
+            console.log(`${date}`)
+            break
+        }
+    }
+    return dataDict[formatDate(date)]
+    
+    // console.log(`${d}   ${date}    ${prevDayDate}`)
+}
+
+function formatDate(date) {
+    return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
+}
+
 </script>
 </body>
 </html>
