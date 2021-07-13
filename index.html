@@ -22,6 +22,7 @@ async function init() {
     // Data cleanup. Format date to a date object, only use Open price as price
     const data = [] // Array of objects with key date and price
     const dataDict = {} // Object with key actual date and price
+
     originalData.forEach( element => {
         monthDayYear = element["Date"].split("/")
 
@@ -102,25 +103,6 @@ async function init() {
     .attr("stroke-width", .5)
     .attr("d", line)
 
-    // Tool tip
-    d3.select("#svg1")
-    .on("mousemove", function(d) {
-        let svgCoord = document.getElementById('svg1').getBoundingClientRect()
-
-        d3.select("#tooltip").html(d3.event.pageX + " " + d3.event.pageY)
-        d3.select("#tooltip2").html(parseInt(d3.event.pageX - svgCoord.x) + " " + parseInt(d3.event.pageY - svgCoord.y))
-
-        let date = xScale.invert(parseInt(d3.event.pageX - svgCoord.x - plotMargin))
-        let dateFormatted = formatDate(date)
-
-        if (formatDate(date) in dataDict === false) {
-            // console.log(dateFormatted)
-            findPrevTradingDay(dateFormatted, dataDict)
-        }
-        
-        d3.select("#tooltip3").html(`${date} ${dateFormatted} $${dataDict[dateFormatted]}`)
-    })
-
     // Y Label
     d3.select("#svg1")
     .append("g")
@@ -133,16 +115,35 @@ async function init() {
     .attr("transform", `translate(${plotMargin},${plotHeight + plotMargin})`)
     .call( d3.axisBottom(xScale).tickFormat(d3.timeFormat("%Y")) )
 
+    // Tool tip
+    d3.select("#svg1")
+    .on("mousemove", function(d) {
+        let svgCoord = document.getElementById('svg1').getBoundingClientRect()
+
+        d3.select("#tooltip").html(d3.event.pageX + " " + d3.event.pageY)
+        d3.select("#tooltip2").html(parseInt(d3.event.pageX - svgCoord.x) + " " + parseInt(d3.event.pageY - svgCoord.y))
+
+        let date = xScale.invert(parseInt(d3.event.pageX - svgCoord.x - plotMargin))
+        let dateFormatted = formatDate(date)
+        let prevTradingDayPrice = null
+
+        if (formatDate(date) in dataDict === false) {
+            // console.log(dateFormatted)
+            prevTradingDayPrice = findPrevTradingDayPrice(dateFormatted, dataDict)
+        }
+        
+        d3.select("#tooltip3").html(`${date} ${dateFormatted} $${dataDict[dateFormatted]} $${prevTradingDayPrice}`)
+    })
 }
 
-function findPrevTradingDay(d, dataDict) {
+function findPrevTradingDayPrice(d, dataDict) {
     const yearMonthDay = d.split("-")
     var date = new Date(yearMonthDay[0], yearMonthDay[1], yearMonthDay[2])
     for (let i = 0; i < 7; i++) {
         date.setDate(date.getDate() - 1);
-        console.log(`${date}`)
+        // console.log(formatDate(date))
         if (formatDate(date) in dataDict) {
-            console.log(`${date}`)
+            // console.log(`${date}`)
             break
         }
     }
