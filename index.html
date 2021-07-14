@@ -58,7 +58,11 @@ async function init() {
     console.log(dataDict)
     // console.log(dataDict[new Date(2000, 1, 1)])
 
-    // Create svg canvas
+    createInteractivePlot(data, dataDict)
+}
+
+function createInteractivePlot(data, dataDict) {
+    // Set svg canvas
     const svgWidth = 1000
     const svgHeight = 500
     const plotMargin = 50
@@ -114,6 +118,14 @@ async function init() {
     .attr("transform", `translate(${plotMargin},${plotHeight + plotMargin})`)
     .call( d3.axisBottom(xScale).tickFormat(d3.timeFormat("%Y")) )
 
+    // Create tooltip vertical line
+    d3.select("#svg3")
+    .append("path")
+    .attr("fill", "none")
+    .attr("stroke", "black")
+    .attr("stroke-width", .5)
+    .attr("id", "toolTipLine")
+
     // Tool tip
     d3.select("#svg3")
     .on("mousemove", function(d) {
@@ -128,20 +140,23 @@ async function init() {
 
         if (formatDate(date) in dataDict === false) {
             // console.log(dateFormatted)
-            prevTradingDayPrice = findPrevTradingDayPrice(dateFormatted, dataDict)
+            prevTradingDayPrice = findNextTradingDayPrice(dateFormatted, dataDict)
         }
         
         d3.select("#tooltip3").html(`${date} ${dateFormatted} $${dataDict[dateFormatted]} $${prevTradingDayPrice}`)
+
+        // Create tooltip vertical line
+        var toolTipLine = d3.line()([[d3.event.pageX - svgCoord.x, plotMargin], [d3.event.pageX - svgCoord.x, plotHeight + plotMargin]])
+        d3.select("#toolTipLine")
+        .attr("d", toolTipLine)
     })
 }
 
-function createInteractivePlot(data, dataDict) {}
-
-function findPrevTradingDayPrice(d, dataDict) {
+function findNextTradingDayPrice(d, dataDict) {
     const yearMonthDay = d.split("-")
     var date = new Date(yearMonthDay[0], yearMonthDay[1], yearMonthDay[2])
     for (let i = 0; i < 7; i++) {
-        date.setDate(date.getDate() - 1);
+        date.setDate(date.getDate() + 1);
         // console.log(formatDate(date))
         if (formatDate(date) in dataDict) {
             // console.log(`${date}`)
