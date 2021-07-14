@@ -123,6 +123,11 @@ function createInteractivePlot(data, dataDict) {
     .append("path")
     .attr("id", "toolTipLine")
 
+    // Create tooltip circle
+    d3.select("#svg3")
+    .append("circle")
+    .attr("id", "toolTipCircle")
+
     // Tool tip
     d3.select("#svg3")
     .on("mousemove", function(d) {
@@ -148,6 +153,10 @@ function createInteractivePlot(data, dataDict) {
             // Remove line
             d3.select("#toolTipLine")
             .attr("stroke-width", 0)
+
+            // Remove circle
+            d3.select("#toolTipCircle")
+            .attr("r", 0)
         }
         else {
             // Show line
@@ -155,13 +164,23 @@ function createInteractivePlot(data, dataDict) {
             .attr("d", toolTipLine)
             .attr("fill", "none")
             .attr("stroke", "black")
-            .attr("stroke-width", .5)      
+            .attr("stroke-width", .5)
+            
+            // Show circle
+            d3.select("#toolTipCircle")
+            .attr("cx", d3.event.pageX - svgCoord.x)
+            .attr("cy", yScale( nextTradingDayPrice ? nextTradingDayPrice : dataDict[dateFormatted] ) + plotMargin)
+            .attr("r", 4)
         }
     })
     .on("mouseout", function (d) {
         // Remove line
         d3.select("#toolTipLine")
-        .attr("stroke-width", 0)    
+        .attr("stroke-width", 0)   
+        
+        // Remove circle
+        d3.select("#toolTipCircle")
+        .attr("r", 0)
     })
 }
 
