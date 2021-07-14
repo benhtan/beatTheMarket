@@ -12,6 +12,7 @@ svg {
 <div id="tooltip" opacity=0 height=50></div>
 <div id="tooltip2" opacity=1 height=50></div>
 <div id="tooltip3" opacity=1 height=50></div>
+<svg id="svg3"></svg>
 
 <script>
 async function init() {
@@ -64,11 +65,9 @@ async function init() {
     const plotWidth = svgWidth - plotMargin*2
     const plotHeight = svgHeight - plotMargin*2
 
-    d3.select("body")
-    .append("svg")
+    const svg3 = d3.select("#svg3")
     .attr("width", svgWidth)
     .attr("height", svgHeight)
-    .attr("id", "svg1")
 
     // Scale
     var xScale = d3.scaleTime().domain( [data[data.length-1].date, data[0].date] ).range([0, plotWidth])
@@ -93,7 +92,7 @@ async function init() {
                 .x(d => xScale( d.date ))
                 .y(d => yScale( d.price ))
 
-    d3.select("#svg1")
+    d3.select("#svg3")
     .append("g")
     .attr("transform", `translate(${plotMargin},${plotMargin})`)
     .append("path")
@@ -104,21 +103,21 @@ async function init() {
     .attr("d", line)
 
     // Y Label
-    d3.select("#svg1")
+    d3.select("#svg3")
     .append("g")
     .attr("transform", `translate(${plotMargin},${plotMargin})`)
     .call( d3.axisLeft(yScale) )
 
     // X Label
-    d3.select("#svg1")
+    d3.select("#svg3")
     .append("g")
     .attr("transform", `translate(${plotMargin},${plotHeight + plotMargin})`)
     .call( d3.axisBottom(xScale).tickFormat(d3.timeFormat("%Y")) )
 
     // Tool tip
-    d3.select("#svg1")
+    d3.select("#svg3")
     .on("mousemove", function(d) {
-        let svgCoord = document.getElementById('svg1').getBoundingClientRect()
+        let svgCoord = document.getElementById('svg3').getBoundingClientRect()
 
         d3.select("#tooltip").html(d3.event.pageX + " " + d3.event.pageY)
         d3.select("#tooltip2").html(parseInt(d3.event.pageX - svgCoord.x) + " " + parseInt(d3.event.pageY - svgCoord.y))
@@ -135,6 +134,8 @@ async function init() {
         d3.select("#tooltip3").html(`${date} ${dateFormatted} $${dataDict[dateFormatted]} $${prevTradingDayPrice}`)
     })
 }
+
+function createInteractivePlot(data, dataDict) {}
 
 function findPrevTradingDayPrice(d, dataDict) {
     const yearMonthDay = d.split("-")
