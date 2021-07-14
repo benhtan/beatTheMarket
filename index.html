@@ -121,9 +121,6 @@ function createInteractivePlot(data, dataDict) {
     // Create tooltip vertical line
     d3.select("#svg3")
     .append("path")
-    .attr("fill", "none")
-    .attr("stroke", "black")
-    .attr("stroke-width", .5)
     .attr("id", "toolTipLine")
 
     // Tool tip
@@ -136,19 +133,35 @@ function createInteractivePlot(data, dataDict) {
 
         let date = xScale.invert(parseInt(d3.event.pageX - svgCoord.x - plotMargin))
         let dateFormatted = formatDate(date)
-        let prevTradingDayPrice = null
+        let nextTradingDayPrice = null
 
-        if (formatDate(date) in dataDict === false) {
+        if (dateFormatted in dataDict === false) {
             // console.log(dateFormatted)
-            prevTradingDayPrice = findNextTradingDayPrice(dateFormatted, dataDict)
+            nextTradingDayPrice = findNextTradingDayPrice(dateFormatted, dataDict)
         }
         
-        d3.select("#tooltip3").html(`${date} ${dateFormatted} $${dataDict[dateFormatted]} $${prevTradingDayPrice}`)
+        d3.select("#tooltip3").html(`${date} ${dateFormatted} $${dataDict[dateFormatted]} $${nextTradingDayPrice}`)
 
         // Create tooltip vertical line
         var toolTipLine = d3.line()([[d3.event.pageX - svgCoord.x, plotMargin], [d3.event.pageX - svgCoord.x, plotHeight + plotMargin]])
+        if (d3.event.pageX - svgCoord.x < plotMargin || d3.event.pageX - svgCoord.x > plotWidth + plotMargin) {
+            // Remove line
+            d3.select("#toolTipLine")
+            .attr("stroke-width", 0)
+        }
+        else {
+            // Show line
+            d3.select("#toolTipLine")
+            .attr("d", toolTipLine)
+            .attr("fill", "none")
+            .attr("stroke", "black")
+            .attr("stroke-width", .5)      
+        }
+    })
+    .on("mouseout", function (d) {
+        // Remove line
         d3.select("#toolTipLine")
-        .attr("d", toolTipLine)
+        .attr("stroke-width", 0)    
     })
 }
 
