@@ -9,10 +9,12 @@ svg {
 </style>
 
 <body onload='init()'>
-<div id="tooltip" opacity=0 height=50></div>
-<div id="tooltip2" opacity=1 height=50></div>
-<div id="tooltip3" opacity=1 height=50></div>
-<svg id="svg3"></svg>
+<div id="tooltip1" style="display: none;"></div>
+<div id="tooltip2" style="display: none;"></div>
+<div id="tooltip3" style="display: none;"></div>
+<svg id="svg1" style="display: none;"></svg>
+<svg id="svg2" style="display: none;"></svg>
+<svg id="svg3" style="display: none;"></svg>
 
 <script>
 async function init() {
@@ -72,6 +74,7 @@ function createInteractivePlot(data, dataDict, svg, tooltip) {
     const svg3 = d3.select(svg)
     .attr("width", svgWidth)
     .attr("height", svgHeight)
+    .style("display", "block")
 
     // Scale
     var xScale = d3.scaleTime().domain( [data[data.length-1].date, data[0].date] ).range([0, plotWidth])
@@ -145,7 +148,8 @@ function createInteractivePlot(data, dataDict, svg, tooltip) {
             nextTradingDayPrice = findNextTradingDayPrice(dateFormatted, dataDict)
         }
         
-        // d3.select(tooltip).html(`${date} ${dateFormatted} $${dataDict[dateFormatted]} $${nextTradingDayPrice}`)
+        d3.select(tooltip).style("display", "block")
+        .html(`${date} ${dateFormatted} $${dataDict[dateFormatted]} $${nextTradingDayPrice}`)
 
         // Create tooltip vertical line
         var toolTipLine = d3.line()([[d3.event.pageX - svgCoord.x, plotMargin], [d3.event.pageX - svgCoord.x, plotHeight + plotMargin]])
