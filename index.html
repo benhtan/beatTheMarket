@@ -133,7 +133,7 @@ function createInteractivePlot(data, dataDict, svg, tooltip) {
 
     // Tool tip
     d3.select(svg)
-    .on("mousemove", function(d) {
+    .on("mousemove", () => {
         let svgCoord = document.querySelector(svg).getBoundingClientRect()
 
         // d3.select("#tooltip").html(d3.event.pageX + " " + d3.event.pageY)
@@ -148,19 +148,15 @@ function createInteractivePlot(data, dataDict, svg, tooltip) {
             nextTradingDayPrice = findNextTradingDayPrice(dateFormatted, dataDict)
         }
         
-        d3.select(tooltip).style("display", "block")
-        .html(`${date} ${dateFormatted} $${dataDict[dateFormatted]} $${nextTradingDayPrice}`)
+        d3.select(tooltip).style("display", "block").style("position", "absolute")
+        .style("top", plotMargin/2)
+        .style("left", d3.event.pageX)
+        .html(`${nextTradingDayPrice ? nextTradingDayPrice : dataDict[dateFormatted]} USD ${prettifyDate(date)}`)
 
         // Create tooltip vertical line
         var toolTipLine = d3.line()([[d3.event.pageX - svgCoord.x, plotMargin], [d3.event.pageX - svgCoord.x, plotHeight + plotMargin]])
         if (d3.event.pageX - svgCoord.x < plotMargin || d3.event.pageX - svgCoord.x > plotWidth + plotMargin) {
-            // Remove line
-            d3.select(`#toolTipLine${tooltip.substring(1)}`)
-            .attr("stroke-width", 0)
-
-            // Remove circle
-            d3.select(`#toolTipCircle${tooltip.substring(1)}`)
-            .attr("r", 0)
+            removeToolTip(tooltip)
         }
         else {
             // Show line
@@ -177,15 +173,20 @@ function createInteractivePlot(data, dataDict, svg, tooltip) {
             .attr("r", 4)
         }
     })
-    .on("mouseout", function (d) {
-        // Remove line
-        d3.select(`#toolTipLine${tooltip.substring(1)}`)
-        .attr("stroke-width", 0)   
-        
-        // Remove circle
-        d3.select(`#toolTipCircle${tooltip.substring(1)}`)
-        .attr("r", 0)
-    })
+    .on( "mouseout", () => {removeToolTip(tooltip)} )
+}
+
+function removeToolTip(tooltip) {
+    // Remove line
+    d3.select(`#toolTipLine${tooltip.substring(1)}`)
+            .attr("stroke-width", 0)
+
+    // Remove circle
+    d3.select(`#toolTipCircle${tooltip.substring(1)}`)
+    .attr("r", 0)
+
+    // Remove details
+    d3.select(tooltip).style("display", "none")
 }
 
 function findNextTradingDayPrice(d, dataDict) {
@@ -206,6 +207,11 @@ function findNextTradingDayPrice(d, dataDict) {
 
 function formatDate(date) {
     return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
+}
+
+function prettifyDate(date) {
+    let dateStringArray = date.toString().split(" ")
+    return `${dateStringArray[1]} ${dateStringArray[2]}, ${dateStringArray[3]}`
 }
 
 </script>
