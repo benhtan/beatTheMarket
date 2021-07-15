@@ -58,10 +58,10 @@ async function init() {
     console.log(dataDict)
     // console.log(dataDict[new Date(2000, 1, 1)])
 
-    createInteractivePlot(data, dataDict)
+    createInteractivePlot(data, dataDict, "#svg3", "#tooltip3")
 }
 
-function createInteractivePlot(data, dataDict) {
+function createInteractivePlot(data, dataDict, svg, tooltip) {
     // Set svg canvas
     const svgWidth = 1000
     const svgHeight = 500
@@ -69,7 +69,7 @@ function createInteractivePlot(data, dataDict) {
     const plotWidth = svgWidth - plotMargin*2
     const plotHeight = svgHeight - plotMargin*2
 
-    const svg3 = d3.select("#svg3")
+    const svg3 = d3.select(svg)
     .attr("width", svgWidth)
     .attr("height", svgHeight)
 
@@ -96,7 +96,7 @@ function createInteractivePlot(data, dataDict) {
                 .x(d => xScale( d.date ))
                 .y(d => yScale( d.price ))
 
-    d3.select("#svg3")
+    d3.select(svg)
     .append("g")
     .attr("transform", `translate(${plotMargin},${plotMargin})`)
     .append("path")
@@ -107,29 +107,29 @@ function createInteractivePlot(data, dataDict) {
     .attr("d", line)
 
     // Y Label
-    d3.select("#svg3")
+    d3.select(svg)
     .append("g")
     .attr("transform", `translate(${plotMargin},${plotMargin})`)
     .call( d3.axisLeft(yScale) )
 
     // X Label
-    d3.select("#svg3")
+    d3.select(svg)
     .append("g")
     .attr("transform", `translate(${plotMargin},${plotHeight + plotMargin})`)
     .call( d3.axisBottom(xScale).tickFormat(d3.timeFormat("%Y")) )
 
     // Create tooltip vertical line
-    d3.select("#svg3")
+    d3.select(svg)
     .append("path")
     .attr("id", "toolTipLine")
 
     // Create tooltip circle
-    d3.select("#svg3")
+    d3.select(svg)
     .append("circle")
     .attr("id", "toolTipCircle")
 
     // Tool tip
-    d3.select("#svg3")
+    d3.select(svg)
     .on("mousemove", function(d) {
         let svgCoord = document.getElementById('svg3').getBoundingClientRect()
 
@@ -145,7 +145,7 @@ function createInteractivePlot(data, dataDict) {
             nextTradingDayPrice = findNextTradingDayPrice(dateFormatted, dataDict)
         }
         
-        d3.select("#tooltip3").html(`${date} ${dateFormatted} $${dataDict[dateFormatted]} $${nextTradingDayPrice}`)
+        d3.select(tooltip).html(`${date} ${dateFormatted} $${dataDict[dateFormatted]} $${nextTradingDayPrice}`)
 
         // Create tooltip vertical line
         var toolTipLine = d3.line()([[d3.event.pageX - svgCoord.x, plotMargin], [d3.event.pageX - svgCoord.x, plotHeight + plotMargin]])
