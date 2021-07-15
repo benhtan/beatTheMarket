@@ -125,13 +125,11 @@ function createInteractivePlot(data, dataDict, svg, tooltip) {
 
     // Create tooltip vertical line
     d3.select(svg)
-    .append("g")
     .append("path")
     .attr("id", `toolTipLine${tooltip.substring(1)}`)
 
     // Create tooltip circle
     d3.select(svg)
-    .append("g")
     .append("circle")
     .attr("id", `toolTipCircle${tooltip.substring(1)}`)
 
