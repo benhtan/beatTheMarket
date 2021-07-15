@@ -121,20 +121,20 @@ function createInteractivePlot(data, dataDict, svg, tooltip) {
     // Create tooltip vertical line
     d3.select(svg)
     .append("path")
-    .attr("id", "toolTipLine")
+    .attr("id", `toolTipLine${tooltip.substring(1)}`)
 
     // Create tooltip circle
     d3.select(svg)
     .append("circle")
-    .attr("id", "toolTipCircle")
+    .attr("id", `toolTipCircle${tooltip.substring(1)}`)
 
     // Tool tip
     d3.select(svg)
     .on("mousemove", function(d) {
-        let svgCoord = document.getElementById('svg3').getBoundingClientRect()
+        let svgCoord = document.querySelector(svg).getBoundingClientRect()
 
-        d3.select("#tooltip").html(d3.event.pageX + " " + d3.event.pageY)
-        d3.select("#tooltip2").html(parseInt(d3.event.pageX - svgCoord.x) + " " + parseInt(d3.event.pageY - svgCoord.y))
+        // d3.select("#tooltip").html(d3.event.pageX + " " + d3.event.pageY)
+        // d3.select("#tooltip2").html(parseInt(d3.event.pageX - svgCoord.x) + " " + parseInt(d3.event.pageY - svgCoord.y))
 
         let date = xScale.invert(parseInt(d3.event.pageX - svgCoord.x - plotMargin))
         let dateFormatted = formatDate(date)
@@ -145,29 +145,29 @@ function createInteractivePlot(data, dataDict, svg, tooltip) {
             nextTradingDayPrice = findNextTradingDayPrice(dateFormatted, dataDict)
         }
         
-        d3.select(tooltip).html(`${date} ${dateFormatted} $${dataDict[dateFormatted]} $${nextTradingDayPrice}`)
+        // d3.select(tooltip).html(`${date} ${dateFormatted} $${dataDict[dateFormatted]} $${nextTradingDayPrice}`)
 
         // Create tooltip vertical line
         var toolTipLine = d3.line()([[d3.event.pageX - svgCoord.x, plotMargin], [d3.event.pageX - svgCoord.x, plotHeight + plotMargin]])
         if (d3.event.pageX - svgCoord.x < plotMargin || d3.event.pageX - svgCoord.x > plotWidth + plotMargin) {
             // Remove line
-            d3.select("#toolTipLine")
+            d3.select(`#toolTipLine${tooltip.substring(1)}`)
             .attr("stroke-width", 0)
 
             // Remove circle
-            d3.select("#toolTipCircle")
+            d3.select(`#toolTipCircle${tooltip.substring(1)}`)
             .attr("r", 0)
         }
         else {
             // Show line
-            d3.select("#toolTipLine")
+            d3.select(`#toolTipLine${tooltip.substring(1)}`)
             .attr("d", toolTipLine)
             .attr("fill", "none")
             .attr("stroke", "black")
             .attr("stroke-width", .5)
             
             // Show circle
-            d3.select("#toolTipCircle")
+            d3.select(`#toolTipCircle${tooltip.substring(1)}`)
             .attr("cx", d3.event.pageX - svgCoord.x)
             .attr("cy", yScale( nextTradingDayPrice ? nextTradingDayPrice : dataDict[dateFormatted] ) + plotMargin)
             .attr("r", 4)
@@ -175,11 +175,11 @@ function createInteractivePlot(data, dataDict, svg, tooltip) {
     })
     .on("mouseout", function (d) {
         // Remove line
-        d3.select("#toolTipLine")
+        d3.select(`#toolTipLine${tooltip.substring(1)}`)
         .attr("stroke-width", 0)   
         
         // Remove circle
-        d3.select("#toolTipCircle")
+        d3.select(`#toolTipCircle${tooltip.substring(1)}`)
         .attr("r", 0)
     })
 }
