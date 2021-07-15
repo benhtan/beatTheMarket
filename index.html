@@ -75,8 +75,8 @@ function createInteractivePlot(data, dataDict, svg, tooltip) {
     .attr("width", svgWidth)
     .attr("height", svgHeight)
     .style("display", "block")
-    // .style("position", "absolute")  // needed for z index
-    // .style("z-index", "99") // so that svg is always above everything else
+    .style("position", "absolute")  // needed for z index
+    .style("z-index", "99") // so that svg is always above everything else
 
     // Scale
     var xScale = d3.scaleTime().domain( [data[data.length-1].date, data[0].date] ).range([0, plotWidth])
@@ -125,11 +125,13 @@ function createInteractivePlot(data, dataDict, svg, tooltip) {
 
     // Create tooltip vertical line
     d3.select(svg)
+    .append("g")
     .append("path")
     .attr("id", `toolTipLine${tooltip.substring(1)}`)
 
     // Create tooltip circle
     d3.select(svg)
+    .append("g")
     .append("circle")
     .attr("id", `toolTipCircle${tooltip.substring(1)}`)
 
@@ -164,12 +166,12 @@ function createInteractivePlot(data, dataDict, svg, tooltip) {
         .style("top", svgCoord.y + plotMargin / 2)
         .style("left", d3.event.pageX) // Displaying tooltip div centered to cursor
 
-
-        d3.select("#tooltip1").style("display", "block")
-        .html(`${d3.event.pageX} ${toolTipCoord}`)
+        // d3.select("#tooltip1").style("display", "block")
+        // .html(`${d3.event.pageX} ${toolTipCoord}`)
 
         // Create tooltip vertical line
-        var toolTipLine = d3.line()([[d3.event.pageX - svgCoord.x, plotMargin], [d3.event.pageX - svgCoord.x, plotHeight + plotMargin]])
+        const lineCircXCoord = d3.event.pageX - svgCoord.x + 2// add one pixel so cursor is never on top of line, always on top of svg
+        var toolTipLine = d3.line()([[lineCircXCoord, plotMargin], [lineCircXCoord, plotHeight + plotMargin]])
         if (d3.event.pageX - svgCoord.x < plotMargin || d3.event.pageX - svgCoord.x > plotWidth + plotMargin) {
             removeToolTip(tooltip)
         }
@@ -183,7 +185,7 @@ function createInteractivePlot(data, dataDict, svg, tooltip) {
             
             // Show circle
             d3.select(`#toolTipCircle${tooltip.substring(1)}`)
-            .attr("cx", d3.event.pageX - svgCoord.x)
+            .attr("cx", lineCircXCoord)
             .attr("cy", yScale( nextTradingDayPrice ? nextTradingDayPrice : dataDict[dateFormatted] ) + plotMargin)
             .attr("r", 4)
         }
