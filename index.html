@@ -33,6 +33,17 @@ async function init() {
     // Clear page
     d3.selectAll("svg").html("")
 
+    // Only get data if it's not available already
+    if (!data) {await getData()}
+
+    createInteractivePlot(data, dataDict, "#svg3", "#tooltip3")
+
+    // To make page interactive
+    d3.select(window).on('resize', init)
+}
+
+// Function to get data from .csv on the web and preprocess it to become data and dataDict
+async function getData() {
     // Get Data
     const originalData = await d3.csv('https://raw.githubusercontent.com/benhtan/beatTheMarket/main/S%26P500%20Prices.csv')
     // console.log(originalData)
@@ -74,10 +85,6 @@ async function init() {
     // console.log(data)
     console.log(dataDict)
     // console.log(dataDict[new Date(2000, 1, 1)])
-
-    createInteractivePlot(data, dataDict, "#svg3", "#tooltip3")
-
-    d3.select(window).on('resize', init)
 }
 
 function createInteractivePlot(data, dataDict, svg, tooltip) {
@@ -89,6 +96,7 @@ function createInteractivePlot(data, dataDict, svg, tooltip) {
     const plotMargin = 50
     const plotWidth = svgWidth - plotMargin*2
     const plotHeight = svgHeight - plotMargin*2
+    const tickFontSize = null
 
     const svg3 = d3.select(svg)
     .attr("width", svgWidth)
@@ -96,6 +104,7 @@ function createInteractivePlot(data, dataDict, svg, tooltip) {
     .style("display", "block")
     .style("position", "absolute")  // needed for z index
     .style("z-index", "99") // so that svg is always above everything else
+    .style("left", (bodySize.width - svgWidth)/2)
 
     // Scale
     var xScale = d3.scaleTime().domain( [data[data.length-1].date, data[0].date] ).range([0, plotWidth])
@@ -163,8 +172,10 @@ function createInteractivePlot(data, dataDict, svg, tooltip) {
         // d3.select("#tooltip1").html(d3.event.pageX + " " + d3.event.pageY)
         // d3.select("#tooltip2").html(parseInt(d3.event.pageX - svgCoord.x) + " " + parseInt(d3.event.pageY - svgCoord.y))
 
+        const cursorToToolTipOffset = 2 // in pixel. add offset so cursor is never on top of line, always on top of svg
+
         // Find relation between cursor location and plot data
-        let cursorXLocationRelativeToPlot = d3.event.pageX - svgCoord.x - plotMargin // cursor location will be 0 and Y axis of plot
+        let cursorXLocationRelativeToPlot = d3.event.pageX - svgCoord.x - plotMargin + cursorToToolTipOffset // cursor location will be 0 and Y axis of plot
         let date = xScale.invert(parseInt(cursorXLocationRelativeToPlot))
         let dateFormatted = formatDate(date)
         let nextTradingDayPrice = null
@@ -195,7 +206,7 @@ function createInteractivePlot(data, dataDict, svg, tooltip) {
         // .html(`${d3.event.pageX} ${cursorXLocationRelativeToPlot} ${toolTipCoord.width}`)
 
         // Create tooltip vertical line
-        const lineCircXCoord = d3.event.pageX - svgCoord.x + 2 // add one pixel so cursor is never on top of line, always on top of svg
+        const lineCircXCoord = d3.event.pageX - svgCoord.x + cursorToToolTipOffset // add offset so cursor is never on top of line, always on top of svg
         var toolTipLine = d3.line()([[lineCircXCoord, plotMargin], [lineCircXCoord, plotHeight + plotMargin]])
         if (d3.event.pageX - svgCoord.x < plotMargin || d3.event.pageX - svgCoord.x > plotWidth + plotMargin) {
             removeToolTip(tooltip)
