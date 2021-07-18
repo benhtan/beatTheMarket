@@ -87,16 +87,16 @@ async function getData() {
     // console.log(dataDict[new Date(2000, 1, 1)])
 }
 
-function createInteractivePlot(data, dataDict, svg, tooltip) {
+function createInteractivePlot(data, dataDict, svg, tooltip, plotTitle = "", xAxisLabel = "", yAxisLabel = "") {
     const bodySize = document.querySelector("body").getBoundingClientRect()
 
     // Set svg canvas
     const svgWidth = bodySize.width * .75
     const svgHeight = svgWidth/2
-    const plotMargin = 50
+    const plotMargin = bodySize.width * .05
     const plotWidth = svgWidth - plotMargin*2
     const plotHeight = svgHeight - plotMargin*2
-    const tickFontSize = null
+    const plotFontSize = bodySize.width * .01
 
     const svg3 = d3.select(svg)
     .attr("width", svgWidth)
@@ -142,12 +142,14 @@ function createInteractivePlot(data, dataDict, svg, tooltip) {
     // Y Label
     d3.select(svg)
     .append("g")
+    .style("font-size", plotFontSize)
     .attr("transform", `translate(${plotMargin},${plotMargin})`)
     .call( d3.axisLeft(yScale) )
 
     // X Label
     d3.select(svg)
     .append("g")
+    .style("font-size", plotFontSize)
     .attr("transform", `translate(${plotMargin},${plotHeight + plotMargin})`)
     .call( d3.axisBottom(xScale).tickFormat(d3.timeFormat("%Y")) )
 
