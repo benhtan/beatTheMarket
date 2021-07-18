@@ -202,13 +202,13 @@ function createInteractivePlot(data, dataDict, svg, tooltip) {
         .style("left", toolTipLeft) // Displaying tooltip div centered to cursor
 
         // debugging print
-        // d3.select("#tooltip1").style("display", "block")
-        // .html(`${d3.event.pageX} ${cursorXLocationRelativeToPlot} ${toolTipCoord.width}`)
+        d3.select("#tooltip1").style("display", "block")
+        .html(`${d3.event.pageX} ${cursorXLocationRelativeToPlot} ${toolTipCoord.width}`)
 
         // Create tooltip vertical line
         const lineCircXCoord = d3.event.pageX - svgCoord.x + cursorToToolTipOffset // add offset so cursor is never on top of line, always on top of svg
         var toolTipLine = d3.line()([[lineCircXCoord, plotMargin], [lineCircXCoord, plotHeight + plotMargin]])
-        if (d3.event.pageX - svgCoord.x < plotMargin || d3.event.pageX - svgCoord.x > plotWidth + plotMargin) {
+        if (cursorXLocationRelativeToPlot < 0 || cursorXLocationRelativeToPlot > plotWidth) {
             removeToolTip(tooltip)
         }
         else {
