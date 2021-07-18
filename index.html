@@ -3,14 +3,15 @@
 <script src='https://d3js.org/d3.v5.min.js'></script>
 
 <style>
-svg,div {
+
+svg {
     border: 1px solid black;
 }
 
-path, circle {
-    position: absolute;
-    z-index: -1;
+body {
+    border: 1px solid grey;
 }
+
 </style>
 
 <body onload='init()'>
@@ -19,17 +20,26 @@ path, circle {
 <div id="tooltip3" style="display: none;"></div>
 <svg id="svg1" style="display: none;"></svg>
 <svg id="svg2" style="display: none;"></svg>
-<svg id="svg3" style="display: none;"></svg>
+<div class="svg-container">
+    <svg id="svg3" style="display: none;"></svg>
+</div>
 
 <script>
+// Global variables
+var data = null
+var dataDict = null
+
 async function init() {
+    // Clear page
+    d3.selectAll("svg").html("")
+
     // Get Data
     const originalData = await d3.csv('https://raw.githubusercontent.com/benhtan/beatTheMarket/main/S%26P500%20Prices.csv')
     // console.log(originalData)
 
     // Data cleanup. Format date to a date object, only use Open price as price
-    const data = [] // Array of objects with key date and price
-    const dataDict = {} // Object with key actual date and price
+    data = [] // Array of objects with key date and price
+    dataDict = {} // Object with key actual date and price
 
     originalData.forEach( element => {
         monthDayYear = element["Date"].split("/")
@@ -66,12 +76,16 @@ async function init() {
     // console.log(dataDict[new Date(2000, 1, 1)])
 
     createInteractivePlot(data, dataDict, "#svg3", "#tooltip3")
+
+    d3.select(window).on('resize', init)
 }
 
 function createInteractivePlot(data, dataDict, svg, tooltip) {
+    const bodySize = document.querySelector("body").getBoundingClientRect()
+
     // Set svg canvas
-    const svgWidth = 1000
-    const svgHeight = 500
+    const svgWidth = bodySize.width * .75
+    const svgHeight = svgWidth/2
     const plotMargin = 50
     const plotWidth = svgWidth - plotMargin*2
     const plotHeight = svgHeight - plotMargin*2
@@ -177,8 +191,8 @@ function createInteractivePlot(data, dataDict, svg, tooltip) {
         .style("left", toolTipLeft) // Displaying tooltip div centered to cursor
 
         // debugging print
-        d3.select("#tooltip1").style("display", "block")
-        .html(`${d3.event.pageX} ${cursorXLocationRelativeToPlot} ${toolTipCoord.width}`)
+        // d3.select("#tooltip1").style("display", "block")
+        // .html(`${d3.event.pageX} ${cursorXLocationRelativeToPlot} ${toolTipCoord.width}`)
 
         // Create tooltip vertical line
         const lineCircXCoord = d3.event.pageX - svgCoord.x + 2 // add one pixel so cursor is never on top of line, always on top of svg
