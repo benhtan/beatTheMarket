@@ -134,7 +134,7 @@ function createInteractivePlot(data, dataDict, svg, tooltip) {
     .attr("id", `toolTipCircle${tooltip.substring(1)}`)
 
     // Tool tip
-    d3.select(svg, tooltip, `#toolTipLine${tooltip.substring(1)}`, `#toolTipCircle${tooltip.substring(1)}`)
+    d3.selectAll(svg, tooltip, `#toolTipLine${tooltip.substring(1)}`, `#toolTipCircle${tooltip.substring(1)}`)
     .on("mousemove", () => {
         removeToolTip(tooltip)
         // Get size and location of svg
@@ -155,20 +155,21 @@ function createInteractivePlot(data, dataDict, svg, tooltip) {
         }
         
         // Create date & price tooltip
-        d3.select(tooltip)
+        d3.select(tooltip).style("display", "block").style("position", "absolute")
         .html(`${nextTradingDayPrice ? nextTradingDayPrice : dataDict[dateFormatted]} USD - ${prettifyDate(date)}`)
 
         let toolTipCoord = document.querySelector(tooltip).getBoundingClientRect()    // Get tooltip size
 
-        d3.select(tooltip).style("display", "block").style("position", "absolute")
+        d3.select(tooltip)
         .style("top", svgCoord.y + plotMargin / 2)
-        .style("left", d3.event.pageX) // Displaying tooltip div centered to cursor
+        .style("left", d3.event.pageX - toolTipCoord.width/2) // Displaying tooltip div centered to cursor
 
-        // d3.select("#tooltip1").style("display", "block")
-        // .html(`${d3.event.pageX} ${toolTipCoord}`)
+        // debugging print
+        d3.select("#tooltip1").style("display", "block")
+        .html(`${d3.event.pageX} ${toolTipCoord.width}`)
 
         // Create tooltip vertical line
-        const lineCircXCoord = d3.event.pageX - svgCoord.x + 2// add one pixel so cursor is never on top of line, always on top of svg
+        const lineCircXCoord = d3.event.pageX - svgCoord.x// add one pixel so cursor is never on top of line, always on top of svg
         var toolTipLine = d3.line()([[lineCircXCoord, plotMargin], [lineCircXCoord, plotHeight + plotMargin]])
         if (d3.event.pageX - svgCoord.x < plotMargin || d3.event.pageX - svgCoord.x > plotWidth + plotMargin) {
             removeToolTip(tooltip)
