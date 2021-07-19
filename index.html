@@ -15,12 +15,18 @@ body {
 </style>
 
 <body onload='init()'>
-<div id="tooltip1" style="display: none;"></div>
-<div id="tooltip2" style="display: none;"></div>
-<div id="tooltip3" style="display: none;"></div>
-<svg id="svg1" style="display: none;"></svg>
-<svg id="svg2" style="display: none;"></svg>
-<div class="svg-container">
+<div class="scene1">
+    <div id="tooltip1" style="display: none;"></div>
+    <svg id="svg1" style="display: none;"></svg>
+</div>
+
+<div class="scene2">
+    <div id="tooltip2" style="display: none;"></div>
+    <svg id="svg2" style="display: none;"></svg>
+</div>
+
+<div class="scene3">
+    <div id="tooltip3" style="display: none;"></div>
     <svg id="svg3" style="display: none;"></svg>
 </div>
 
@@ -153,22 +159,13 @@ function createInteractivePlot(data, dataDict, svg, tooltip, plotTitle = "", xAx
     // console.log( xScale(data[2000].date) )
     // console.log(data[2000].date)
 
-    // Plot
-    // d3.select("#svg1")
-    // .append("g")
-    // .attr("transform", `translate(${plotMargin},${plotMargin})`) 
-    // .selectAll("circle")
-    // .data(data)
-    // .enter()
-    // .append("circle")
-    // .attr( "cx", function (d) {return xScale( d.date )} )
-    // .attr( "cy", function (d) {return yScale( d.price )} )
-    // .attr("r",  0.5)
-
+    // Get data object keys
+    const objectKeys = Object.keys(data[0])
+    console.log(objectKeys)
     // Create main plot
     const line = d3.line()
-                .x(d => xScale( d.date ))
-                .y(d => yScale( d.price ))
+                .x(d => xScale( d[objectKeys[0]] ))
+                .y(d => yScale( d[objectKeys[1]] ))
 
     d3.select(svg)
     .append("g")
