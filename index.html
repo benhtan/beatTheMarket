@@ -241,8 +241,8 @@ function createInteractivePlot(data, dataDict, svg, tooltip, plotTitle = "", xAx
         let toolTipCoord = document.querySelector(tooltip).getBoundingClientRect()    // Get tooltip size
 
         // Figuring out where tooltip div left should be. Tooltip div should not go outside of plot in x direction
-        if (cursorXLocationRelativeToPlot - toolTipCoord.width/2 <= 0) {var toolTipLeft = plotMargin + svgCoord.x}
-        else if (cursorXLocationRelativeToPlot + toolTipCoord.width/2 >= plotWidth) {var toolTipLeft = plotMargin + plotWidth + svgCoord.x - toolTipCoord.width}
+        if (cursorXLocationRelativeToPlot - cursorToToolTipOffset - toolTipCoord.width/2 <= 0) {var toolTipLeft = plotMargin + svgCoord.x + cursorToToolTipOffset}
+        else if (cursorXLocationRelativeToPlot - cursorToToolTipOffset + toolTipCoord.width/2 >= plotWidth) {var toolTipLeft = plotMargin + plotWidth + svgCoord.x + cursorToToolTipOffset - toolTipCoord.width}
         else {var toolTipLeft = d3.event.pageX - toolTipCoord.width/2}
 
         d3.select(tooltip)
