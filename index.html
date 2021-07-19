@@ -43,9 +43,9 @@ async function init() {
 
     // Only get data if it's not available already
     if (!data) {await getData()}
-
-    // createInteractivePlot(data, dataDict, "#svg3", "#tooltip3", "S&P500" , "Date", "Value - USD")
-    createInteractivePlot(cashSaver, cashSaverDict, "#svg1", "#tooltip1", "Cash Saver" , "Date", "Value - USD")
+    
+    createInteractivePlot(cashSaver, cashSaverDict, "#svg1", "#tooltip1", "Cash Saver" , "Date", "Value - USD", [0.00,100000.00])
+    // createInteractivePlot(data, dataDict, "#svg3", "#tooltip3", "S&P500" , "Date", "Value - USD", [0.00,4000.00])
 
     // To make page interactive
     d3.select(window).on('resize', init)
@@ -124,7 +124,7 @@ async function getData() {
     console.log(cashSaverDict)
 }
 
-function createInteractivePlot(data, dataDict, svg, tooltip, plotTitle = "", xAxisLabel = "", yAxisLabel = "") {
+function createInteractivePlot(data = [], dataDict = {}, svg = "#svg", tooltip = "#tooltip", plotTitle = "Title", xAxisLabel = "X", yAxisLabel = "Y", yRange = [0,500]) {
     const bodySize = document.querySelector("body").getBoundingClientRect()
 
     // Set svg canvas
@@ -148,14 +148,14 @@ function createInteractivePlot(data, dataDict, svg, tooltip, plotTitle = "", xAx
     // Finding startDate and endDate of data
     startEndDate = findStartEndDate(data[0].date, data[data.length-1].date)
     var xScale = d3.scaleTime().domain( [startEndDate.startDate, startEndDate.endDate] ).range([0, plotWidth])
-    var yScale = d3.scaleLinear().domain( [0.00, 4000.00] ).range( [plotHeight, 0] )
+    var yScale = d3.scaleLinear().domain( yRange ).range( [plotHeight, 0] )
     // console.log(yScale(2000))
     // console.log( xScale(data[2000].date) )
     // console.log(data[2000].date)
 
     // Get data object keys
     const objectKeys = Object.keys(data[0])
-    console.log(objectKeys)
+    // console.log(objectKeys)
     // Create main plot
     const line = d3.line()
                 .x(d => xScale( d[objectKeys[0]] ))
