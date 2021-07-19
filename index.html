@@ -100,25 +100,17 @@ async function getData() {
     cashSaver = []
     cashSaverDict = {}
     // Finding startDate and endDate of data
-    if (data[0].date > data[data.length-1].date) {
-        var startDate = data[data.length-1].date
-        var endDate = data[0].date
-    }
-    else {
-        var startDate = data[0].date
-        var endDate = data[data.length-1].date
-    }
+    startEndDate = findStartEndDate(data[0].date, data[data.length-1].date)
     // console.log(startDate)
     // Creating cashSaverDict
     let cashEarned = 100 // USD earned on 1st and 15th of every month
     let currCash = cashEarned
-    let currDate = new Date(startDate.getFullYear(), startDate.getMonth(), 1)
+    let currDate = new Date(startEndDate.startDate.getFullYear(), startEndDate.startDate.getMonth(), 1)
 
-    while (endDate >= currDate) {
+    while (startEndDate.endDate >= currDate) {
         // console.log(`${currDate} ${currCash} ${[1,15].includes(currDate.getDate())}`)
-        let tempDate = new Date(currDate.getFullYear(), currDate.getMonth(), currDate.getDate())
         cashSaver.push({
-            date: tempDate,
+            date: new Date(currDate.getFullYear(), currDate.getMonth(), currDate.getDate()),
             cashTotal: currCash
         })
 
@@ -153,7 +145,9 @@ function createInteractivePlot(data, dataDict, svg, tooltip, plotTitle = "", xAx
     
 
     // Scale
-    var xScale = d3.scaleTime().domain( [data[data.length-1].date, data[0].date] ).range([0, plotWidth])
+    // Finding startDate and endDate of data
+    startEndDate = findStartEndDate(data[0].date, data[data.length-1].date)
+    var xScale = d3.scaleTime().domain( [startEndDate.startDate, startEndDate.endDate] ).range([0, plotWidth])
     var yScale = d3.scaleLinear().domain( [0.00, 4000.00] ).range( [plotHeight, 0] )
     // console.log(yScale(2000))
     // console.log( xScale(data[2000].date) )
@@ -334,6 +328,11 @@ function formatDate(date) {
 function prettifyDate(date) {
     let dateStringArray = date.toString().split(" ")
     return `${dateStringArray[1]} ${dateStringArray[2]}, ${dateStringArray[3]}`
+}
+
+function findStartEndDate(a = new Date(),b = new Date()) {
+    if (a > b) { return {startDate: b, endDate: a} }
+    return {startDate: a, endDate: b}
 }
 
 </script>
