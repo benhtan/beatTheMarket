@@ -27,9 +27,9 @@ body {
 <script>
 // Global variables
 var data = null // Array of objects with key date and price
-var dataDict = null // Object with key actual date and price
+var dataDict = null // Object with key actual date and price. Date in the format of fullYear-monthIndex-date
 var cashSaver =  null // Array of objects with key date and price
-var cashSaverDict = null // Object with key actual date and price
+var cashSaverDict = null // Object with key actual date and price. Date in the format of fullYear-monthIndex-date
 
 async function init() {
     // Clear page
@@ -38,7 +38,8 @@ async function init() {
     // Only get data if it's not available already
     if (!data) {await getData()}
 
-    createInteractivePlot(data, dataDict, "#svg3", "#tooltip3", "S&P500" , "Date", "Value - USD")
+    // createInteractivePlot(data, dataDict, "#svg3", "#tooltip3", "S&P500" , "Date", "Value - USD")
+    createInteractivePlot(cashSaver, cashSaverDict, "#svg1", "#tooltip1", "Cash Saver" , "Date", "Value - USD")
 
     // To make page interactive
     d3.select(window).on('resize', init)
@@ -52,9 +53,10 @@ async function getData() {
 
     // Data cleanup. Format date to a date object, only use Open price as price
     data = [] // Array of objects with key date and price
-    dataDict = {} // Object with key actual date and price
+    dataDict = {} // Object with key actual date and price. Date in the format of fullYear-monthIndex-date
 
     originalData.forEach( element => {
+        // console.log(element)
         monthDayYear = element["Date"].split("/")
 
         if (parseInt("20" + monthDayYear[2]) > 2020) {
@@ -85,12 +87,13 @@ async function getData() {
     })
 
     console.log(data)
-    // console.log(dataDict)
+    console.log(dataDict)
     // console.log(dataDict[new Date(2000, 1, 1)])
 
-    // Generating data for cashSaver
-    // console.log(data[0])
-    // console.log(data[data.length-1])
+    // Generating data for cashSaverDict
+    cashSaver = []
+    cashSaverDict = {}
+    // Finding startDate and endDate of data
     if (data[0].date > data[data.length-1].date) {
         var startDate = data[data.length-1].date
         var endDate = data[0].date
@@ -99,8 +102,28 @@ async function getData() {
         var startDate = data[0].date
         var endDate = data[data.length-1].date
     }
+    // console.log(startDate)
+    // Creating cashSaverDict
+    let cashEarned = 100 // USD earned on 1st and 15th of every month
+    let currCash = cashEarned
+    let currDate = new Date(startDate.getFullYear(), startDate.getMonth(), 1)
 
-    console.log(startDate)
+    while (endDate >= currDate) {
+        // console.log(`${currDate} ${currCash} ${[1,15].includes(currDate.getDate())}`)
+        let tempDate = new Date(currDate.getFullYear(), currDate.getMonth(), currDate.getDate())
+        cashSaver.push({
+            date: tempDate,
+            cashTotal: currCash
+        })
+
+        cashSaverDict[`${currDate.getFullYear()}-${currDate.getMonth()}-${currDate.getDate()}`] = currCash
+
+        currDate.setDate(currDate.getDate() + 1) // advance day by 1
+        if ([1,15].includes(currDate.getDate())) {currCash += cashEarned} // add cash
+    }
+
+    console.log(cashSaver)
+    console.log(cashSaverDict)
 }
 
 function createInteractivePlot(data, dataDict, svg, tooltip, plotTitle = "", xAxisLabel = "", yAxisLabel = "") {
