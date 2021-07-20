@@ -251,18 +251,11 @@ function createInteractivePlot(data = [], dataDict = {}, svg = "#svg", tooltip =
         // Find relation between cursor location and plot data
         let cursorXLocationRelativeToPlot = d3.event.pageX - svgCoord.x - plotMargin + cursorToToolTipOffset // cursor location will be 0 and Y axis of plot
         let date = xScale.invert(parseInt(cursorXLocationRelativeToPlot))
-        let dateFormatted = formatDate(date)
-        let nextTradingDayPrice = null
+        let nextTradingDayPrice = findNextTradingDayPrice(formatDate(date), dataDict)
 
-        // Handle problem where cursor is not at a valid trading day
-        if (dateFormatted in dataDict === false) {
-            // console.log(dateFormatted)
-            nextTradingDayPrice = findNextTradingDayPrice(dateFormatted, dataDict)
-        }
-        
         // Create date & price tooltip
         d3.select(tooltip).style("display", "block").style("position", "absolute")
-        .html(`${nextTradingDayPrice ? nextTradingDayPrice : dataDict[dateFormatted]} USD - ${prettifyDate(date)}`)
+        .html(`${nextTradingDayPrice} USD - ${prettifyDate(date)}`)
 
         let toolTipCoord = document.querySelector(tooltip).getBoundingClientRect()    // Get tooltip size
 
