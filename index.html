@@ -15,21 +15,29 @@ body {
 </style>
 
 <body onload='init()'>
-<div id="tooltip1" style="display: none;"></div>
-<div id="tooltip2" style="display: none;"></div>
-<div id="tooltip3" style="display: none;"></div>
-<svg id="svg1" style="display: none;"></svg>
-<svg id="svg2" style="display: none;"></svg>
-<div class="svg-container">
+<div class="scene1">
+    <div id="tooltip1" style="display: none;"></div>
+    <svg id="svg1" style="display: none;"></svg>
+</div>
+
+<div class="scene2">
+    <div id="tooltip2" style="display: none;"></div>
+    <svg id="svg2" style="display: none;"></svg>
+</div>
+
+<div class="scene3">
+    <div id="tooltip3" style="display: none;"></div>
     <svg id="svg3" style="display: none;"></svg>
 </div>
 
 <script>
 // Global variables
-var data = null // Array of objects with key date and price
-var dataDict = null // Object with key actual date and price
-var cashSaver =  null // Array of objects with key date and price
-var cashSaverDict = null // Object with key actual date and price
+var data = null // Array of objects with keys date and price
+var dataDict = null // Object with key actual date and value price. Date in the format of fullYear-monthIndex-date
+var cashSaver =  null // Array of objects with keys date and cash total
+var cashSaverDict = null // Object with key actual date and value cash total. Date in the format of fullYear-monthIndex-date
+var consistentInvestor = null // Array of objects with keys date, market value and # of shares owned
+var consistentInvestorDict = null 
 
 async function init() {
     // Clear page
@@ -37,8 +45,9 @@ async function init() {
 
     // Only get data if it's not available already
     if (!data) {await getData()}
-
-    createInteractivePlot(data, dataDict, "#svg3", "#tooltip3", "S&P500" , "Date", "Value - USD")
+    
+    createInteractivePlot(cashSaver, cashSaverDict, "#svg1", "#tooltip1", "Cash Saver" , "Date", "Value - USD", [0.00,100000.00])
+    // createInteractivePlot(data, dataDict, "#svg3", "#tooltip3", "S&P500" , "Date", "Value - USD", [0.00,4000.00])
 
     // To make page interactive
     d3.select(window).on('resize', init)
@@ -52,9 +61,10 @@ async function getData() {
 
     // Data cleanup. Format date to a date object, only use Open price as price
     data = [] // Array of objects with key date and price
-    dataDict = {} // Object with key actual date and price
+    dataDict = {} // Object with key actual date and price. Date in the format of fullYear-monthIndex-date
 
     originalData.forEach( element => {
+        // console.log(element)
         monthDayYear = element["Date"].split("/")
 
         if (parseInt("20" + monthDayYear[2]) > 2020) {
@@ -85,25 +95,38 @@ async function getData() {
     })
 
     console.log(data)
-    // console.log(dataDict)
+    console.log(dataDict)
     // console.log(dataDict[new Date(2000, 1, 1)])
 
-    // Generating data for cashSaver
-    // console.log(data[0])
-    // console.log(data[data.length-1])
-    if (data[0].date > data[data.length-1].date) {
-        var startDate = data[data.length-1].date
-        var endDate = data[0].date
-    }
-    else {
-        var startDate = data[0].date
-        var endDate = data[data.length-1].date
+    // Generating data for cashSaverDict
+    cashSaver = []
+    cashSaverDict = {}
+    // Finding startDate and endDate of data
+    startEndDate = findStartEndDate(data[0].date, data[data.length-1].date)
+    // console.log(startDate)
+    // Creating cashSaverDict
+    let cashEarned = 100 // USD earned on 1st and 15th of every month
+    let currCash = cashEarned
+    let currDate = new Date(startEndDate.startDate.getFullYear(), startEndDate.startDate.getMonth(), 1)
+
+    while (startEndDate.endDate >= currDate) {
+        // console.log(`${currDate} ${currCash} ${[1,15].includes(currDate.getDate())}`)
+        cashSaver.push({
+            date: new Date(currDate.getFullYear(), currDate.getMonth(), currDate.getDate()),
+            cashTotal: currCash
+        })
+
+        cashSaverDict[`${currDate.getFullYear()}-${currDate.getMonth()}-${currDate.getDate()}`] = currCash
+
+        currDate.setDate(currDate.getDate() + 1) // advance day by 1
+        if ([1,15].includes(currDate.getDate())) {currCash += cashEarned} // add cash
     }
 
-    console.log(startDate)
+    console.log(cashSaver)
+    console.log(cashSaverDict)
 }
 
-function createInteractivePlot(data, dataDict, svg, tooltip, plotTitle = "", xAxisLabel = "", yAxisLabel = "") {
+function createInteractivePlot(data = [], dataDict = {}, svg = "#svg", tooltip = "#tooltip", plotTitle = "Title", xAxisLabel = "X", yAxisLabel = "Y", yRange = [0,500]) {
     const bodySize = document.querySelector("body").getBoundingClientRect()
 
     // Set svg canvas
@@ -124,28 +147,21 @@ function createInteractivePlot(data, dataDict, svg, tooltip, plotTitle = "", xAx
     
 
     // Scale
-    var xScale = d3.scaleTime().domain( [data[data.length-1].date, data[0].date] ).range([0, plotWidth])
-    var yScale = d3.scaleLinear().domain( [0.00, 4000.00] ).range( [plotHeight, 0] )
+    // Finding startDate and endDate of data
+    startEndDate = findStartEndDate(data[0].date, data[data.length-1].date)
+    var xScale = d3.scaleTime().domain( [startEndDate.startDate, startEndDate.endDate] ).range([0, plotWidth])
+    var yScale = d3.scaleLinear().domain( yRange ).range( [plotHeight, 0] )
     // console.log(yScale(2000))
     // console.log( xScale(data[2000].date) )
     // console.log(data[2000].date)
 
-    // Plot
-    // d3.select("#svg1")
-    // .append("g")
-    // .attr("transform", `translate(${plotMargin},${plotMargin})`) 
-    // .selectAll("circle")
-    // .data(data)
-    // .enter()
-    // .append("circle")
-    // .attr( "cx", function (d) {return xScale( d.date )} )
-    // .attr( "cy", function (d) {return yScale( d.price )} )
-    // .attr("r",  0.5)
-
+    // Get data object keys
+    const objectKeys = Object.keys(data[0])
+    // console.log(objectKeys)
     // Create main plot
     const line = d3.line()
-                .x(d => xScale( d.date ))
-                .y(d => yScale( d.price ))
+                .x(d => xScale( d[objectKeys[0]] ))
+                .y(d => yScale( d[objectKeys[1]] ))
 
     d3.select(svg)
     .append("g")
@@ -314,6 +330,11 @@ function formatDate(date) {
 function prettifyDate(date) {
     let dateStringArray = date.toString().split(" ")
     return `${dateStringArray[1]} ${dateStringArray[2]}, ${dateStringArray[3]}`
+}
+
+function findStartEndDate(a = new Date(),b = new Date()) {
+    if (a > b) { return {startDate: b, endDate: a} }
+    return {startDate: a, endDate: b}
 }
 
 </script>
