@@ -32,10 +32,12 @@ body {
 
 <script>
 // Global variables
-var data = null // Array of objects with key date and price
-var dataDict = null // Object with key actual date and price. Date in the format of fullYear-monthIndex-date
-var cashSaver =  null // Array of objects with key date and price
-var cashSaverDict = null // Object with key actual date and price. Date in the format of fullYear-monthIndex-date
+var data = null // Array of objects with keys date and price
+var dataDict = null // Object with key actual date and value price. Date in the format of fullYear-monthIndex-date
+var cashSaver =  null // Array of objects with keys date and cash total
+var cashSaverDict = null // Object with key actual date and value cash total. Date in the format of fullYear-monthIndex-date
+var consistentInvestor = null // Array of objects with keys date, market value and # of shares owned
+var consistentInvestorDict = null 
 
 async function init() {
     // Clear page
