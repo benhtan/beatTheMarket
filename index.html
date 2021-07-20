@@ -46,8 +46,8 @@ async function init() {
     // Only get data if it's not available already
     if (!data) {await getData()}
     
-    // createInteractivePlot(cashSaver, cashSaverDict, "#svg1", "#tooltip1", "Cash Saver" , "Date", "Value - USD", [0.00,100000.00])
-    createInteractivePlot(data, dataDict, "#svg3", "#tooltip3", "S&P500" , "Date", "Value - USD", [0.00,4000.00])
+    createInteractivePlot(cashSaver, cashSaverDict, "#svg1", "#tooltip1", "Cash Saver" , "Date", "Value - USD", [0.00,100000.00])
+    // createInteractivePlot(data, dataDict, "#svg3", "#tooltip3", "S&P500" , "Date", "Value - USD", [0.00,4000.00])
 
     // To make page interactive
     d3.select(window).on('resize', init)
@@ -60,8 +60,8 @@ async function getData() {
     // console.log(originalData)
 
     // Data cleanup. Format date to a date object, only use Open price as price
-    data = [] // Array of objects with key date and price
-    dataDict = {} // Object with key actual date and price. Date in the format of fullYear-monthIndex-date
+    data = [] // Array of objects with keys date and price
+    dataDict = {} // Object with key actual date and value price. Date in the format of fullYear-monthIndex-date
 
     originalData.forEach( element => {
         // console.log(element)
@@ -110,7 +110,7 @@ async function getData() {
     let cashEarned = 100.00 // USD earned on 1st and 15th of every month
     let currCash = cashEarned // Cash on the 1st
     let currDate = new Date(startEndDate.startDate.getFullYear(), startEndDate.startDate.getMonth(), 1) // The 1st date of starting year and month
-    let currShares = currCash/findNextTradingDayPrice(`${currDate.getFullYear()}-${currDate.getMonth()}-${currDate.getDate()}`, dataDict)  // Invenstor buy on the 1st, this is the share on the 1st. The 1st day of the year is never a trading day.
+    let currShares = currCash / findNextTradingDayPrice(formatDate(currDate), dataDict)  // Invenstor buy on the 1st, this is the share on the 1st. current number of shares owned = Cash/pricePerShare
 
     while (startEndDate.endDate >= currDate) {
         // Cash Saver
@@ -119,7 +119,7 @@ async function getData() {
             cashTotal: currCash
         })
 
-        cashSaverDict[`${currDate.getFullYear()}-${currDate.getMonth()}-${currDate.getDate()}`] = currCash
+        cashSaverDict[formatDate(currDate)] = currCash
 
         currDate.setDate(currDate.getDate() + 1) // advance day by 1
         if ([1,15].includes(currDate.getDate())) {currCash += cashEarned} // add cash
@@ -127,13 +127,14 @@ async function getData() {
         // Consistent Investor
         consistentInvestor.push({
             date: new Date(currDate.getFullYear(), currDate.getMonth(), currDate.getDate()),
-            marketValue: currCash,
-            numOfShares: currShares
+            marketValue: currShares,  // # of shares * price per share at the date
+            numOfShares: currShares,
+            pricePerShare: findNextTradingDayPrice(formatDate(currDate), dataDict)
         })
     }
 
-    console.log(cashSaver)
-    console.log(cashSaverDict)
+    // console.log(cashSaver)
+    // console.log(cashSaverDict)
 }
 
 function createInteractivePlot(data = [], dataDict = {}, svg = "#svg", tooltip = "#tooltip", plotTitle = "Title", xAxisLabel = "X", yAxisLabel = "Y", yRange = [0,500]) {
