@@ -31,13 +31,13 @@ body {
 </div>
 
 <script>
-// Global variables
+// Global variables. Array is used for plotting. Dict is used for tooltip
 var data = null // Array of objects with keys date and price
 var dataDict = null // Object with key actual date and value price. Date in the format of fullYear-monthIndex-date
 var cashSaver =  null // Array of objects with keys date and cash total
 var cashSaverDict = null // Object with key actual date and value cash total. Date in the format of fullYear-monthIndex-date
 var consistentInvestor = null // Array of objects with keys date, market value and # of shares owned
-var consistentInvestorDict = null 
+var consistentInvestorDict = null // Object with key actual date and value market value
 
 async function init() {
     // Clear page
@@ -46,8 +46,8 @@ async function init() {
     // Only get data if it's not available already
     if (!data) {await getData()}
     
-    createInteractivePlot(cashSaver, cashSaverDict, "#svg1", "#tooltip1", "Cash Saver" , "Date", "Value - USD", [0.00,100000.00])
-    // createInteractivePlot(data, dataDict, "#svg3", "#tooltip3", "S&P500" , "Date", "Value - USD", [0.00,4000.00])
+    // createInteractivePlot(cashSaver, cashSaverDict, "#svg1", "#tooltip1", "Cash Saver" , "Date", "Value - USD", [0.00,100000.00])
+    createInteractivePlot(data, dataDict, "#svg3", "#tooltip3", "S&P500" , "Date", "Value - USD", [0.00,4000.00])
 
     // To make page interactive
     d3.select(window).on('resize', init)
@@ -98,19 +98,22 @@ async function getData() {
     console.log(dataDict)
     // console.log(dataDict[new Date(2000, 1, 1)])
 
-    // Generating data for cashSaverDict
+    // Generating data for cashSaver and consistentInvestor
     cashSaver = []
     cashSaverDict = {}
+    consistentInvestor = []
+    consistentInvestorDict = {}
     // Finding startDate and endDate of data
     startEndDate = findStartEndDate(data[0].date, data[data.length-1].date)
     // console.log(startDate)
     // Creating cashSaverDict
-    let cashEarned = 100 // USD earned on 1st and 15th of every month
-    let currCash = cashEarned
-    let currDate = new Date(startEndDate.startDate.getFullYear(), startEndDate.startDate.getMonth(), 1)
+    let cashEarned = 100.00 // USD earned on 1st and 15th of every month
+    let currCash = cashEarned // Cash on the 1st
+    let currDate = new Date(startEndDate.startDate.getFullYear(), startEndDate.startDate.getMonth(), 1) // The 1st date of starting year and month
+    let currShares = currCash/findNextTradingDayPrice(`${currDate.getFullYear()}-${currDate.getMonth()}-${currDate.getDate()}`, dataDict)  // Invenstor buy on the 1st, this is the share on the 1st. The 1st day of the year is never a trading day.
 
     while (startEndDate.endDate >= currDate) {
-        // console.log(`${currDate} ${currCash} ${[1,15].includes(currDate.getDate())}`)
+        // Cash Saver
         cashSaver.push({
             date: new Date(currDate.getFullYear(), currDate.getMonth(), currDate.getDate()),
             cashTotal: currCash
@@ -120,6 +123,13 @@ async function getData() {
 
         currDate.setDate(currDate.getDate() + 1) // advance day by 1
         if ([1,15].includes(currDate.getDate())) {currCash += cashEarned} // add cash
+
+        // Consistent Investor
+        consistentInvestor.push({
+            date: new Date(currDate.getFullYear(), currDate.getMonth(), currDate.getDate()),
+            marketValue: currCash,
+            numOfShares: currShares
+        })
     }
 
     console.log(cashSaver)
@@ -324,7 +334,7 @@ function findNextTradingDayPrice(d, dataDict) {
 }
 
 function formatDate(date) {
-    return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
+    return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}` // return date object to string fullYear-monthIndex-Date
 }
 
 function prettifyDate(date) {
