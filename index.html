@@ -318,6 +318,10 @@ function removeToolTip(tooltip) {
 }
 
 function findNextTradingDayPrice(d, dataDict) {
+    if (d in dataDict === true) {
+            return dataDict[d]
+        }
+
     const yearMonthDay = d.split("-")
     var date = new Date(yearMonthDay[0], yearMonthDay[1], yearMonthDay[2])
     for (let i = 0; i < 7; i++) {
