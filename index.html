@@ -290,7 +290,7 @@ function createInteractivePlot(data = [], dataDict = {}, svg = "#svg", tooltip =
             // Show circle
             d3.select(`#toolTipCircle${tooltip.substring(1)}`)
             .attr("cx", lineCircXCoord)
-            .attr("cy", yScale( nextTradingDayPrice ? nextTradingDayPrice : dataDict[dateFormatted] ) + plotMargin)
+            .attr("cy", yScale( nextTradingDayPrice ) + plotMargin)
             .attr("r", 4)
         }
     })
@@ -311,6 +311,7 @@ function removeToolTip(tooltip) {
 }
 
 function findNextTradingDayPrice(d, dataDict) {
+    // if d is trading day, then return the price
     if (d in dataDict === true) {
             return dataDict[d]
         }
