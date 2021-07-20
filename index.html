@@ -121,20 +121,23 @@ async function getData() {
 
         cashSaverDict[formatDate(currDate)] = currCash
 
-        currDate.setDate(currDate.getDate() + 1) // advance day by 1
-        if ([1,15].includes(currDate.getDate())) {currCash += cashEarned} // add cash
-
         // Consistent Investor
         consistentInvestor.push({
             date: new Date(currDate.getFullYear(), currDate.getMonth(), currDate.getDate()),
-            marketValue: currShares,  // # of shares * price per share at the date
+            marketValue: currShares * findNextTradingDayPrice(formatDate(currDate), dataDict),  // # of shares * price per share at the date
             numOfShares: currShares,
             pricePerShare: findNextTradingDayPrice(formatDate(currDate), dataDict)
         })
+
+        currDate.setDate(currDate.getDate() + 1) // advance day by 1
+        if ([1,15].includes(currDate.getDate())) {
+            currCash += cashEarned // add cash
+        }
     }
 
     // console.log(cashSaver)
     // console.log(cashSaverDict)
+    console.log(consistentInvestor)
 }
 
 function createInteractivePlot(data = [], dataDict = {}, svg = "#svg", tooltip = "#tooltip", plotTitle = "Title", xAxisLabel = "X", yAxisLabel = "Y", yRange = [0,500]) {
