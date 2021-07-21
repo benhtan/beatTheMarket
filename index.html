@@ -264,7 +264,7 @@ function createInteractivePlot(data = [], dataDict = {}, svg = "#svg", tooltip =
         // Find relation between cursor location and plot data
         let cursorXLocationRelativeToPlot = d3.event.pageX - svgCoord.x - plotMargin + cursorToToolTipOffset // cursor location will be 0 and Y axis of plot
         let date = xScale.invert(parseInt(cursorXLocationRelativeToPlot))
-        let nextTradingDayPrice = findNextTradingDayPrice(formatDate(date), dataDict)
+        let nextTradingDayPrice = findNextTradingDayPrice(formatDate(date), dataDict) ? findNextTradingDayPrice(formatDate(date), dataDict) : 0 // if statement to remove toLocaleString error when date is outside of data range
 
         // Create date & price tooltip
         d3.select(tooltip).style("display", "block").style("position", "absolute")
