@@ -46,7 +46,8 @@ async function init() {
     // Only get data if it's not available already
     if (!data) {await getData()}
     
-    createInteractivePlot(cashSaver, cashSaverDict, "#svg1", "#tooltip1", "Cash Saver" , "Date", "Value - USD", [0.00,100000.00])
+    // createInteractivePlot(cashSaver, cashSaverDict, "#svg1", "#tooltip1", "Cash Saver" , "Date", "Value - USD", [0.00,100000.00])
+    createInteractivePlot(consistentInvestor, consistentInvestorDict, "#svg2", "#tooltip2", "Consistent Investor" , "Date", "Value - USD", [0.00, 300000.00])
     // createInteractivePlot(data, dataDict, "#svg3", "#tooltip3", "S&P500" , "Date", "Value - USD", [0.00,4000.00])
 
     // To make page interactive
@@ -267,7 +268,7 @@ function createInteractivePlot(data = [], dataDict = {}, svg = "#svg", tooltip =
 
         // Create date & price tooltip
         d3.select(tooltip).style("display", "block").style("position", "absolute")
-        .html(`${nextTradingDayPrice} USD - ${prettifyDate(date)}`)
+        .html(`${nextTradingDayPrice.toLocaleString("en-US", {style:"currency", currency:"USD"})} USD - ${prettifyDate(date)}`)
 
         let toolTipCoord = document.querySelector(tooltip).getBoundingClientRect()    // Get tooltip size
 
