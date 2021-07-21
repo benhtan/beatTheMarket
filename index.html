@@ -113,31 +113,39 @@ async function getData() {
     let currShares = currCash / findNextTradingDayPrice(formatDate(currDate), dataDict)  // Invenstor buy on the 1st, this is the share on the 1st. current number of shares owned = Cash/pricePerShare
 
     while (startEndDate.endDate >= currDate) {
-        // Cash Saver
+        let newDate = new Date(currDate.getFullYear(), currDate.getMonth(), currDate.getDate())
+        // Cash Saver Array
         cashSaver.push({
-            date: new Date(currDate.getFullYear(), currDate.getMonth(), currDate.getDate()),
+            date: newDate,
             cashTotal: currCash
         })
 
+        // Cash Saver Dict
         cashSaverDict[formatDate(currDate)] = currCash
 
-        // Consistent Investor
+        // Consistent Investor Array
+        let nextTradingDayPrice = findNextTradingDayPrice(formatDate(currDate), dataDict)
         consistentInvestor.push({
-            date: new Date(currDate.getFullYear(), currDate.getMonth(), currDate.getDate()),
-            marketValue: currShares * findNextTradingDayPrice(formatDate(currDate), dataDict),  // # of shares * price per share at the date
+            date: newDate,
+            marketValue: currShares * nextTradingDayPrice,  // # of shares * price per share at the date
             numOfShares: currShares,
-            pricePerShare: findNextTradingDayPrice(formatDate(currDate), dataDict)
+            pricePerShare: nextTradingDayPrice
         })
+
+        // Consistent Investor Dict
+        consistentInvestorDict[formatDate(currDate)] = consistentInvestor[consistentInvestor.length - 1].marketValue
 
         currDate.setDate(currDate.getDate() + 1) // advance day by 1
         if ([1,15].includes(currDate.getDate())) {
-            currCash += cashEarned // add cash
+            currCash += cashEarned // add cash for cash saver
+            currShares += cashEarned / nextTradingDayPrice  // buy shares for consistent investor
         }
     }
 
     // console.log(cashSaver)
     // console.log(cashSaverDict)
     console.log(consistentInvestor)
+    console.log(consistentInvestorDict)
 }
 
 function createInteractivePlot(data = [], dataDict = {}, svg = "#svg", tooltip = "#tooltip", plotTitle = "Title", xAxisLabel = "X", yAxisLabel = "Y", yRange = [0,500]) {
