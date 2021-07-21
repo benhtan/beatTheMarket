@@ -1,6 +1,11 @@
 <html lang="en">
-
-    <script src='https://d3js.org/d3.v5.min.js'></script>
+    <head>
+        <script src='https://d3js.org/d3.v5.min.js'></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <title>Beat The Market!</title>
+    </head>
+    
 
     <style>
         svg {
@@ -10,11 +15,49 @@
         body {
             border: 1px solid grey;
         }
+
+        .nav-link {
+            color: black;
+        }
     </style>
 
     <body onload='init()'>
-        <div id="navbar"></div>
-        <div id="scene1">
+        <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="pills-saving-investing-tab" data-bs-toggle="pill" data-bs-target="#intro" type="button" role="tab" aria-controls="intro" aria-selected="true">Saving/Investing</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pills-cash-saver-tab" data-bs-toggle="pill" data-bs-target="#scene1" type="button" role="tab" aria-controls="scene1" aria-selected="false">Cash Saver</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pills-consistent-investor-tab" data-bs-toggle="pill" data-bs-target="#scene2" type="button" role="tab" aria-controls="scene2" aria-selected="false">Consistent Investor</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pills-beat-tab" data-bs-toggle="pill" data-bs-target="#scene3" type="button" role="tab" aria-controls="scene3" aria-selected="false">Beat The Market!</button>
+            </li>
+        </ul>
+        <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="intro" role="tabpanel" aria-labelledby="pills-saving-investing-tab">
+                <div id="intro-paragraph">INTRO</div>
+            </div>
+
+            <div class="tab-pane fade" id="scene1" role="tabpanel" aria-labelledby="pills-cash-saver-tab">
+                <div id="tooltip1" style="display: none;"></div>
+                <svg id="svg1" style="display: none;"></svg>
+            </div>
+
+            <div class="tab-pane fade" id="scene2" role="tabpanel" aria-labelledby="pills-consistent-investor-tab">
+                <div id="tooltip2" style="display: none;"></div>
+                <svg id="svg2" style="display: none;"></svg>
+            </div>
+
+            <div class="tab-pane fade" id="scene3" role="tabpanel" aria-labelledby="pills-beat-tab">
+                <div id="tooltip3" style="display: none;"></div>
+                <svg id="svg3" style="display: none;"></svg>
+            </div>
+        </div>
+        
+        <!-- <div id="scene1">
             <div id="tooltip1" style="display: none;"></div>
             <svg id="svg1" style="display: none;"></svg>
         </div>
@@ -27,7 +70,7 @@
         <div id="scene3">
             <div id="tooltip3" style="display: none;"></div>
             <svg id="svg3" style="display: none;"></svg>
-        </div>
+        </div> -->
     </body>
 
     <script>
@@ -46,9 +89,9 @@
             // Only get data if it's not available already
             if (!data) {await getData()}
             
-            // createInteractivePlot(cashSaver, cashSaverDict, "#svg1", "#tooltip1", "Cash Saver" , "Date", "Value - USD", [0.00,100000.00])
+            createInteractivePlot(cashSaver, cashSaverDict, "#svg1", "#tooltip1", "Cash Saver" , "Date", "Value - USD", [0.00,100000.00])
             createInteractivePlot(consistentInvestor, consistentInvestorDict, "#svg2", "#tooltip2", "Consistent Investor" , "Date", "Value - USD", [0.00, 300000.00])
-            // createInteractivePlot(data, dataDict, "#svg3", "#tooltip3", "S&P500" , "Date", "Value - USD", [0.00,4000.00])
+            createInteractivePlot(data, dataDict, "#svg3", "#tooltip3", "S&P500" , "Date", "Value - USD", [0.00,4000.00])
 
             // To make page interactive
             d3.select(window).on('resize', init)
