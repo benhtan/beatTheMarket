@@ -19,6 +19,12 @@
         .nav-link {
             color: black;
         }
+
+        #intro-paragraph {
+            margin:auto;
+            width: 50%;
+            border: 1px solid grey;
+        }
     </style>
 
     <body onload='init()'>
@@ -41,7 +47,9 @@
 
         <div class="tab-content" id="pills-tabContent">
             <div class="tab-pane fade show active" id="intro" role="tabpanel" aria-labelledby="pills-saving-investing-tab">
-                <div id="intro-paragraph">INTRO</div>
+                <div id="intro-paragraph">
+                    INTRO
+                </div>
             </div>
 
             <div class="tab-pane fade" id="scene1" role="tabpanel" aria-labelledby="pills-cash-saver-tab">
@@ -59,21 +67,6 @@
                 <svg id="svg3" style="display: none;"></svg>
             </div>
         </div>
-        
-        <!-- <div id="scene1">
-            <div id="tooltip1" style="display: none;"></div>
-            <svg id="svg1" style="display: none;"></svg>
-        </div>
-
-        <div id="scene2">
-            <div id="tooltip2" style="display: none;"></div>
-            <svg id="svg2" style="display: none;"></svg>
-        </div>
-
-        <div id="scene3">
-            <div id="tooltip3" style="display: none;"></div>
-            <svg id="svg3" style="display: none;"></svg>
-        </div> -->
     </body>
 
     <script>
