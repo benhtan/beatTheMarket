@@ -35,6 +35,12 @@
             /* border: 1px solid grey; */
         }
 
+        .svg-container {
+            display: flex;
+            justify-content: center;
+            /* border: 1px solid grey; */
+        }
+
         .paragraph {
             margin-bottom: 3%;
             text-align: justify;
@@ -109,7 +115,10 @@
                     </div>
                 </div>
                 <div id="tooltip1" style="display: none;"></div>
-                <svg id="svg1" style="display: none;"></svg>
+                <div class="svg-container">
+                    <svg id="svg1" style="display: none;"></svg>
+                </div>
+                
             </div>
 
             <div class="tab-pane fade" id="scene2" role="tabpanel" aria-labelledby="pills-consistent-investor-tab">
@@ -123,7 +132,9 @@
                     </div>
                 </div>
                 <div id="tooltip2" style="display: none;"></div>
-                <svg id="svg2" style="display: none;"></svg>
+                <div class="svg-container">
+                    <svg id="svg2" style="display: none;"></svg>
+                </div>
             </div>
 
             <div class="tab-pane fade" id="scene3" role="tabpanel" aria-labelledby="pills-beat-tab">
@@ -142,7 +153,9 @@
                 </div>
 
                 <div id="tooltip3" style="display: none;"></div>
-                <svg id="svg3" style="display: none;"></svg>
+                <div class="svg-container">
+                    <svg id="svg3" style="display: none;"></svg>
+                </div>
 
                 <table class="table w-50 text-center" align="center">
                     <thead>
@@ -187,7 +200,15 @@
             // To make page interactive
             d3.select(window).on('resize', init)
 
-            
+            // Positioning table on Beat The Market
+            // const svgCoord = document.querySelector("#svg3").getBoundingClientRect()
+            // const paragraphCoord = document.querySelector("#beat-the-market").getBoundingClientRect()
+            // console.log(svgCoord)
+            // d3.select("table")
+            // .style("position", "absolute")  // needed for z index
+            // .style("z-index", "99") // so that svg is always above everything else
+            // .style("top", svgCoord.bottom)
+            // .style("left", paragraphCoord.left)
         }
 
         // Function to get data from .csv on the web and preprocess it to become data and dataDict
@@ -300,19 +321,9 @@
             .attr("width", svgWidth)
             .attr("height", svgHeight)
             .style("display", "block")
-            .style("position", "absolute")  // needed for z index
+            // .style("position", "absolute")  // needed for z index
             .style("z-index", "99") // so that svg is always above everything else
-            .style("left", (bodySize.width - svgWidth)/2)
-
-            // Positioning table on Beat The Market
-            const svgCoord = document.querySelector("#svg3").getBoundingClientRect()
-            const paragraphCoord = document.querySelector("#beat-the-market").getBoundingClientRect()
-            console.log(svgCoord)
-            d3.select("table")
-            .style("position", "absolute")  // needed for z index
-            .style("z-index", "99") // so that svg is always above everything else
-            .style("top", svgCoord.bottom)
-            .style("left", paragraphCoord.left)
+            // .style("left", (bodySize.width - svgWidth)/2)
 
             // Scale
             // Finding startDate and endDate of data
