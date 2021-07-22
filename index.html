@@ -87,7 +87,7 @@
                     </div>
                     <div class="paragraph">
                         Through this narrative visualization, we will analyze three different strategies of building wealth; cash saving, consistent investing, and beating the market. 
-                        The analyses will be done in the time frame of 30 years from 1990 to 2020. The investment asset used for the analysis is S&P500.
+                        The analyses will be done in the time frame of 30 years. The investment asset used for the analysis is S&P500.
                     </div>
                 </div>
             </div>
@@ -111,7 +111,7 @@
                     <div class="plot-desc">
                         A consistent investor would immediately invest the extra $100 earned on the 1st of 15th of every month into S&P500, no matter if the market is high or low. 
                         The graph below shows the growth of the investment account in the time span of 30 years. 
-                        Starting from $0, the invetment account will grow to <span id="consistentInvestor-value">$$$$$</span>.
+                        Starting from $0, the investment account will grow to <span id="consistentInvestor-value">$$$$$</span>.
                         Significantly higher than cash saver!
                     </div>
                 </div>
@@ -120,6 +120,19 @@
             </div>
 
             <div class="tab-pane fade" id="scene3" role="tabpanel" aria-labelledby="pills-beat-tab">
+                <div class="paragraph-container">
+                    <h1 class="paragraph">Beat the Market!</h1>
+                    <div class="paragraph">
+                        Now it's your time to shine! You will earn $100 each month on the 1st and 15th. 
+                        The decision is in your hands wether you want to invest it right away or wait for the market to dip.
+                        The annotation on the graph shows a monumental event throughout the last 30 years where the market plunged significantly, use it to your advantage.
+                    </div>
+                    <div class="plot-desc">
+                        Point your cursor on the graph to view prices at different dates and click to invest. 
+                        View your purchase history and final account value at the table below.
+                        Good luck!
+                    </div>
+                </div>
                 <div id="tooltip3" style="display: none;"></div>
                 <svg id="svg3" style="display: none;"></svg>
             </div>
@@ -143,7 +156,7 @@
             if (!data) {await getData()}
             
             // Generating plots
-            createInteractivePlot(cashSaver, cashSaverDict, "#svg1", "#tooltip1", "Cash Saver" , "Date", "Value - USD", [0.00,100000.00])
+            createInteractivePlot(cashSaver, cashSaverDict, "#svg1", "#tooltip1", "Cash Saver" , "Date", "Value - USD", [0.00,80000.00])
             createInteractivePlot(consistentInvestor, consistentInvestorDict, "#svg2", "#tooltip2", "Consistent Investor" , "Date", "Value - USD", [0.00, 300000.00])
             createInteractivePlot(data, dataDict, "#svg3", "#tooltip3", "S&P500" , "Date", "Value - USD", [0.00,4000.00])
 
