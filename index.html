@@ -150,6 +150,7 @@
                         View your purchase history and final account value at the table below.
                         Good luck!
                     </div>
+                    <div id="debug"></div>
                 </div>
 
                 <div id="tooltip3" style="display: none;"></div>
@@ -434,13 +435,13 @@
                 else {var toolTipLeft = d3.event.pageX - toolTipCoord.width/2}
 
                 d3.select(tooltip)
-                .style("top", svgCoord.y + plotMargin - toolTipCoord.height)
+                .style("top", svgCoord.y + plotMargin - toolTipCoord.height + window.scrollY)
                 .style("left", toolTipLeft) // Displaying tooltip div centered to cursor
                 .style("font-size", plotFontSize)   // Responsive font size
 
                 // debugging print
-                // d3.select("#tooltip1").style("display", "block")
-                // .html(`${d3.event.pageX} ${cursorXLocationRelativeToPlot} ${toolTipCoord.width}`)
+                d3.select("#debug").style("display", "block")
+                .html(`${d3.event.pageY} ${svgCoord.y}`)
 
                 // Create tooltip vertical line
                 const lineCircXCoord = d3.event.pageX - svgCoord.x + cursorToToolTipOffset // add offset so cursor is never on top of line, always on top of svg
