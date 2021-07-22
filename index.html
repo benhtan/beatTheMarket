@@ -20,6 +20,11 @@
             margin-top: 2%;
         }
 
+        .table {
+            margin:auto
+            width: 50%;
+        }
+
         .nav-link {
             color: black;
         }
@@ -32,10 +37,12 @@
 
         .paragraph {
             margin-bottom: 3%;
+            text-align: justify;
         }
 
         .plot-desc {
             margin-bottom: 0px;
+            text-align: justify;
         }
     </style>
 
@@ -121,7 +128,7 @@
 
             <div class="tab-pane fade" id="scene3" role="tabpanel" aria-labelledby="pills-beat-tab">
                 <div class="paragraph-container">
-                    <h1 class="paragraph">Beat the Market!</h1>
+                    <h1 class="paragraph" id="beat-the-market">Beat the Market!</h1>
                     <div class="paragraph">
                         Now it's your time to shine! You will earn $100 each month on the 1st and 15th. 
                         The decision is in your hands wether you want to invest it right away or wait for the market to dip.
@@ -133,8 +140,21 @@
                         Good luck!
                     </div>
                 </div>
+
                 <div id="tooltip3" style="display: none;"></div>
                 <svg id="svg3" style="display: none;"></svg>
+
+                <table class="table w-50 text-center" align="center">
+                    <thead>
+                        <tr>
+                            <th scope="col">Date</th>
+                            <th scope="col">Shares Qty</th>
+                            <th scope="col">Price/Share</th>
+                            <th scope="col">Total Invested</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             </div>
         </div>
     </body>
@@ -166,6 +186,8 @@
             
             // To make page interactive
             d3.select(window).on('resize', init)
+
+            
         }
 
         // Function to get data from .csv on the web and preprocess it to become data and dataDict
@@ -281,7 +303,16 @@
             .style("position", "absolute")  // needed for z index
             .style("z-index", "99") // so that svg is always above everything else
             .style("left", (bodySize.width - svgWidth)/2)
-            
+
+            // Positioning table on Beat The Market
+            const svgCoord = document.querySelector("#svg3").getBoundingClientRect()
+            const paragraphCoord = document.querySelector("#beat-the-market").getBoundingClientRect()
+            console.log(svgCoord)
+            d3.select("table")
+            .style("position", "absolute")  // needed for z index
+            .style("z-index", "99") // so that svg is always above everything else
+            .style("top", svgCoord.bottom)
+            .style("left", paragraphCoord.left)
 
             // Scale
             // Finding startDate and endDate of data
