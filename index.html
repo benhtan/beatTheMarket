@@ -16,14 +16,22 @@
             border: 1px solid grey;
         }
 
+        h1 {
+            margin-top: 2%;
+        }
+
         .nav-link {
             color: black;
         }
 
-        #intro-paragraph {
+        .paragraph-container {
             margin:auto;
             width: 50%;
-            border: 1px solid grey;
+            /* border: 1px solid grey; */
+        }
+
+        .paragraph {
+            margin-bottom: 5%;
         }
     </style>
 
@@ -31,7 +39,7 @@
         <nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-center">
             <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="pills-saving-investing-tab" data-bs-toggle="pill" data-bs-target="#intro" type="button" role="tab" aria-controls="intro" aria-selected="true">Saving/Investing</button>
+                    <button class="nav-link active" id="pills-saving-investing-tab" data-bs-toggle="pill" data-bs-target="#intro" type="button" role="tab" aria-controls="intro" aria-selected="true">Saving vs. Investing</button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="pills-cash-saver-tab" data-bs-toggle="pill" data-bs-target="#scene1" type="button" role="tab" aria-controls="scene1" aria-selected="false">Cash Saver</button>
@@ -47,12 +55,33 @@
 
         <div class="tab-content" id="pills-tabContent">
             <div class="tab-pane fade show active" id="intro" role="tabpanel" aria-labelledby="pills-saving-investing-tab">
-                <div id="intro-paragraph">
-                    INTRO
+                <div class="paragraph-container">
+                    <h1 class="paragraph">Saving vs. Investing</h1>
+                    <div class="paragraph">
+                        Let’s imagine that you have an extra $100 on the 1st and 15th of every month. Of course you could spend it but what if you would like to delay gratification and grow your finances for that great beautiful tomorrow. What will be your strategy? 
+                    </div>
+                    <div class="paragraph">
+                        One could argue that the most obvious strategy is to save it, hopefully not under your mattress but on a savings account. Saving is definitely the least risky route, the dollar amount that you save will not decrease. However, with the consistent increase in the cost of goods and services, the value of a dollar is decreasing with time. Is savings the best strategy? What would be a better way to grow your finances?
+                    </div>
+                    <div class="paragraph">
+                        An alternative strategy to saving is investing. Instead of putting away extra money in the savings account, the money can be used to purchase different types of investment that hopefully will appreciate with time. The most common form of investment assets are stocks, bonds and mutual funds. However, the value of investment assets can go up or down depending on market conditions. The value of some of these assets can also go to $0, for example Enron. Investing is definitely a high risk activity, there is no guarantee that your money will grow. However, historical data has proven that in the long term, most investment assets will go up in value.
+                    </div>
+                    <div class="paragraph">
+                        The fluctuation of value in investment assets motivates investors to try to beat the market by buying assets when their prices drop to hopefully sell them at a higher price. But is waiting for the right time where the asset value has dropped the best strategy? After all, how can one predict the movement of the market? Is it better to just be consistent and buy investment as soon as you have the extra cash?
+                    </div>
+                    <div class="paragraph">
+                        Through this narrative visualization, we will investigate three different strategies of building wealth. Cash saving, consistent investing, and beating the market.
+                    </div>
                 </div>
             </div>
 
             <div class="tab-pane fade" id="scene1" role="tabpanel" aria-labelledby="pills-cash-saver-tab">
+                <div class="paragraph-container">
+                    <h1 class="paragraph">Cash Saver</h1>
+                    <div class="paragraph">
+                        Let’s imagine that you have an extra $100 on the 1st and 15th of every month. Of course you could spend it but what if you would like to delay gratification and grow your finances for that great beautiful tomorrow. What will be your strategy? 
+                    </div>
+                </div>
                 <div id="tooltip1" style="display: none;"></div>
                 <svg id="svg1" style="display: none;"></svg>
             </div>
