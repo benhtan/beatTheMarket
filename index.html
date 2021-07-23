@@ -117,7 +117,7 @@
                 <div class="plot-desc">
                     A cash saver would put away the extra $100 earned on the 1st of 15th of every month into a savings account. 
                     The graph below shows the growth of the savings account in the time span of 30 years. 
-                    Starting from $0, the savings account will grow to a respectable <span id="cashSaver-value">$$$$$</span>.
+                    Starting from $0, the savings account will grow to a respectable <span id="cashSaver-value">$</span>.
                 </div>
             </div>
 
@@ -142,7 +142,7 @@
                 <div class="plot-desc">
                     A consistent investor would immediately invest the extra $100 earned on the 1st of 15th of every month into S&P500, no matter if the market is high or low. 
                     The graph below shows the growth of the investment account in the time span of 30 years. 
-                    Starting from $0, the investment account will grow to <span id="consistentInvestor-value">$$$$$</span>.
+                    Starting from $0, the investment account will grow to <span id="consistentInvestor-value">$</span>.
                     Significantly higher than cash saver!
                 </div>
             </div>
@@ -180,8 +180,8 @@
             <ul class="nav nav-pills mb-6 justify-content-center" style="margin-top: 5%;">
                 <li class="nav-item">
                     <!-- Match the button id to button id in nav bar -->
-                    <div class="btn btn-success">Cash to Invest: <span id="cash-to-invest">$$$$</span></div>
-                    <div class="btn btn-warning">Final Value: <span id="final-value">$$$$</span></div>
+                    <div class="btn btn-success">Cash to Invest: <span id="cash-to-invest">$</span></div>
+                    <div class="btn btn-warning">Final Value: <span id="final-value">$</span></div>
                 </li>
             </ul>
 
@@ -213,6 +213,10 @@
         var consistentInvestor = null // Array of objects with keys date, market value and # of shares owned
         var consistentInvestorDict = null // Object with key actual date and value market value
 
+        // Global variables for purchase history
+        var purchaseHistory = []
+        var investedCash = 0.00
+
         async function init() {
             // Clear plots
             d3.selectAll("svg").html("")
@@ -226,7 +230,7 @@
             createInteractivePlot(data, dataDict, "#svg3", "#tooltip3", "S&P500" , "Date", "Value - USD", [0.00,4000.00])
 
             // Filling final account value
-            d3.select("#cashSaver-value").html(cashSaver[cashSaver.length-1].cashTotal.toLocaleString("en-US", {style:"currency", currency:"USD"}))
+            d3.selectAll("#cashSaver-value, #final-value").html(cashSaver[cashSaver.length-1].cashTotal.toLocaleString("en-US", {style:"currency", currency:"USD"}))
             d3.select("#consistentInvestor-value").html(consistentInvestor[consistentInvestor.length-1].marketValue.toLocaleString("en-US", {style:"currency", currency:"USD"}))
             
             // To make page interactive
@@ -515,8 +519,18 @@
                     .attr("cy", yScale( nextTradingDayPrice ) + plotMargin)
                     .attr("r", 4)
                 }
+
+                // Showing cash to invest if on svg3 scene3
+                if (svg === "#svg3") {calculateCashToInvest(date)}
             })
             .on( "mouseout", () => {removeToolTip(tooltip)} )
+        }
+
+        function calculateCashToInvest(date) {
+            // cashSaver total cash at a certain date - invested cash
+            const cashToInvest = cashSaverDict[formatDate(date)] - investedCash
+
+            if (cashToInvest) {d3.select("#cash-to-invest").html(prettifyNumber(cashToInvest))}
         }
 
         function removeToolTip(tooltip) {
@@ -560,6 +574,10 @@
         function prettifyDate(date) {
             let dateStringArray = date.toString().split(" ")
             return `${dateStringArray[1]} ${dateStringArray[2]}, ${dateStringArray[3]}`
+        }
+
+        function prettifyNumber(num) {
+            return num.toLocaleString("en-US", {style:"currency", currency:"USD"})
         }
 
         function findStartEndDate(a = new Date(),b = new Date()) {
