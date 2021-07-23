@@ -182,7 +182,10 @@
                 <li class="nav-item">
                     <!-- Match the button id to button id in nav bar -->
                     <div class="btn btn-success">Cash to Invest: <span id="cash-to-invest">$</span></div>
-                    <div class="btn btn-warning">Final Value: <span id="final-value">$</span></div>
+                    <div class="btn btn-warning">
+                        Final Value: <span id="final-value">$</span> 
+                        (to beat: <span id="consistentInvestor-value">$</span>)
+                    </div>
                 </li>
             </ul>
 
@@ -233,7 +236,7 @@
 
             // Filling final account value
             d3.selectAll("#cashSaver-value, #final-value").html(prettifyNumber(cashSaver[cashSaver.length-1].cashTotal))
-            d3.select("#consistentInvestor-value").html(prettifyNumber(consistentInvestor[consistentInvestor.length-1].marketValue))
+            d3.selectAll("#consistentInvestor-value").html(prettifyNumber(consistentInvestor[consistentInvestor.length-1].marketValue))
             
             // To make page interactive
             d3.select(window).on('resize', init)
@@ -533,7 +536,10 @@
 
         function storeInvestment(date) {
             // console.log(date)
-            if (calculateCashToInvest(date) <= 0) {return}
+            const startEndDate = findStartEndDate(data[0].date, data[data.length-1].date)
+
+            // Do nothing if clicking at invalid location on graph
+            if (calculateCashToInvest(date) <= 0 || date < startEndDate.startDate || date > startEndDate.endDate) {return}
 
             let pricePerShare = findNextTradingDayPrice(formatDate(date), dataDict) ? findNextTradingDayPrice(formatDate(date), dataDict) : 0
             let cashToInvest = calculateCashToInvest(date)
@@ -599,6 +605,9 @@
 
             // Remove details
             d3.select(tooltip).style("display", "none")
+
+            // Set cash to invest to 0
+            d3.select("#cash-to-invest").html(prettifyNumber(0))
         }
 
         function findNextTradingDayPrice(d, dataDict) {
