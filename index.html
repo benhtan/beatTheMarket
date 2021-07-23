@@ -54,7 +54,7 @@
 
     <body onload='init()'>
         <nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-center">
-            <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
+            <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab">
                 <li class="nav-item">
                     <button class="nav-link active" id="pills-saving-investing-tab">Saving vs. Investing</button>
                 </li>
@@ -102,6 +102,13 @@
                     The analyses will be done in the time frame of 30 years. The investment asset used for the analysis is S&P500.
                 </div>
             </div>
+
+            <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab">
+                <li class="nav-item">
+                    <!-- Match the button id to button id in nav bar -->
+                    <button class="btn btn-primary" id="pills-cash-saver-tab">Next</button> 
+                </li>
+            </ul>
         </div>
 
         <div class="fade" id="scene1">
@@ -113,10 +120,19 @@
                     Starting from $0, the savings account will grow to a respectable <span id="cashSaver-value">$$$$$</span>.
                 </div>
             </div>
+
             <div id="tooltip1" style="display: none;"></div>
             <div class="svg-container">
                 <svg id="svg1" style="display: none;"></svg>
             </div>
+
+            <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab">
+                <li class="nav-item">
+                    <!-- Match the button id to button id in nav bar -->
+                    <button class="btn btn-primary" id="pills-saving-investing-tab">Prev</button>
+                    <button class="btn btn-primary" id="pills-consistent-investor-tab">Next</button>
+                </li>
+            </ul>
             
         </div>
 
@@ -130,10 +146,19 @@
                     Significantly higher than cash saver!
                 </div>
             </div>
+
             <div id="tooltip2" style="display: none;"></div>
             <div class="svg-container">
                 <svg id="svg2" style="display: none;"></svg>
             </div>
+
+            <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab">
+                <li class="nav-item">
+                    <!-- Match the button id to button id in nav bar -->
+                    <button class="btn btn-primary" id="pills-cash-saver-tab">Prev</button>
+                    <button class="btn btn-primary" id="pills-beat-tab">Next</button>
+                </li>
+            </ul>
         </div>
 
         <div class="fade" id="scene3">
@@ -225,7 +250,7 @@
                     d3.select(button).classed("active", false)
                 }) 
 
-                console.log(`${buttonID} ${sceneID}`)
+                // console.log(`${buttonID} ${sceneID}`)
                 d3.select(sceneID).classed("show", true).style("display", "block") // show the correct scene
                 d3.select(buttonID).classed("active", true) // pill highlight the clicked button
             })
