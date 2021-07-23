@@ -171,8 +171,9 @@
                 </div>
                 <div class="plot-desc">
                     Point your cursor on the graph to view prices at different dates and click to invest. 
-                    View your purchase history and final account value at the table below.
-                    Good luck!
+                    The green box below will show how much cash you have to invest at any point in the graph.
+                    View your investment history and final account value below.
+                    Can you Beat the Market? Good luck!
                 </div>
                 <div id="debug"></div>
             </div>
@@ -535,15 +536,32 @@
             if (calculateCashToInvest(date) <= 0) {return}
 
             purchaseHistory.push({
-                date: date,
-                sharesQty: calculateCashToInvest(date) / dataDict[formatDate(date)],
-                pricePerShare: dataDict[formatDate(date)],
+                date: prettifyDate(date),
+                sharesQty: (calculateCashToInvest(date) / dataDict[formatDate(date)]).toFixed(3),
+                pricePerShare: prettifyNumber(dataDict[formatDate(date)]),
                 totalInvested: calculateCashToInvest(date)
             })
 
             investedCash += calculateCashToInvest(date)
             totalSharesOwned += calculateCashToInvest(date) / dataDict[formatDate(date)]
             console.log(purchaseHistory)
+
+            updateInvestmentHistoryTable()
+        }
+
+        function updateInvestmentHistoryTable() {
+            // clear table
+            d3.select("tbody").html("")
+
+            // put purchaseHistory to table
+            var tr = d3.select("tbody")
+                    .selectAll("tr")
+                    .data(purchaseHistory)
+                    .enter().append("tr");
+            var td = tr.selectAll("td")
+                    .data(function(d, i) { return Object.values(d); })
+                    .enter().append("td")
+                    .text(function(d) { return d; });
         }
 
         function calculateCashToInvest(date) {
