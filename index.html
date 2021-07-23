@@ -55,16 +55,16 @@
     <body onload='init()'>
         <nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-center">
             <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
-                <li class="nav-item" role="presentation">
+                <li class="nav-item">
                     <button class="nav-link active" id="pills-saving-investing-tab">Saving vs. Investing</button>
                 </li>
-                <li class="nav-item" role="presentation">
+                <li class="nav-item">
                     <button class="nav-link" id="pills-cash-saver-tab">Cash Saver</button>
                 </li>
-                <li class="nav-item" role="presentation">
+                <li class="nav-item">
                     <button class="nav-link" id="pills-consistent-investor-tab">Consistent Investor</button>
                 </li>
-                <li class="nav-item" role="presentation">
+                <li class="nav-item">
                     <button class="nav-link" id="pills-beat-tab">Beat The Market!</button>
                 </li>
             </ul>
@@ -198,6 +198,37 @@
             
             // To make page interactive
             d3.select(window).on('resize', init)
+
+            userButtonNav()
+        }
+
+        // handle navigation
+        function userButtonNav() {
+            // Mapping button action the appropriate scene to activate
+            var buttonToSceneMap = {}
+            buttonToSceneMap["#pills-saving-investing-tab"] = "#intro"
+            buttonToSceneMap["#pills-cash-saver-tab"] = "#scene1"
+            buttonToSceneMap["#pills-consistent-investor-tab"] = "#scene2"
+            buttonToSceneMap["#pills-beat-tab"] = "#scene3"
+            const buttonIDs = Object.keys(buttonToSceneMap)
+            console.log(buttonIDs)
+
+            d3.selectAll("button").on("click", () => {
+                const buttonID = `#${d3.event.target.id}` // Add # to id
+                const sceneID = buttonToSceneMap[buttonID]
+
+                buttonIDs.forEach((button) => {
+                    // unshow all scene
+                    d3.select(buttonToSceneMap[button]).classed("show", false).style("display", "none")
+
+                    // remove pill highlight from button
+                    d3.select(button).classed("active", false)
+                }) 
+
+                console.log(`${buttonID} ${sceneID}`)
+                d3.select(sceneID).classed("show", true).style("display", "block") // show the correct scene
+                d3.select(buttonID).classed("active", true) // pill highlight the clicked button
+            })
         }
 
         // Function to get data from .csv on the web and preprocess it to become data and dataDict
