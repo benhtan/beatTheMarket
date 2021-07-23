@@ -9,63 +9,198 @@
 
     <style>
         svg {
-            border: 1px solid black;
+            /* border: 1px solid black; */
         }
 
         body {
-            border: 1px solid grey;
+            /* border: 1px solid grey; */
+        }
+
+        h1 {
+            margin-top: 2%;
+        }
+
+        .table {
+            margin:auto
+            width: 50%;
         }
 
         .nav-link {
             color: black;
         }
 
-        #intro-paragraph {
+        .paragraph-container {
             margin:auto;
             width: 50%;
-            border: 1px solid grey;
+            /* border: 1px solid grey; */
+        }
+
+        .svg-container {
+            display: flex;
+            justify-content: center;
+            /* border: 1px solid grey; */
+        }
+
+        .paragraph {
+            margin-bottom: 3%;
+            text-align: justify;
+        }
+
+        .plot-desc {
+            margin-bottom: 0px;
+            text-align: justify;
         }
     </style>
 
     <body onload='init()'>
         <nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-center">
-            <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="pills-saving-investing-tab" data-bs-toggle="pill" data-bs-target="#intro" type="button" role="tab" aria-controls="intro" aria-selected="true">Saving/Investing</button>
+            <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab">
+                <li class="nav-item">
+                    <button class="nav-link active" id="pills-saving-investing-tab">Saving vs. Investing</button>
                 </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="pills-cash-saver-tab" data-bs-toggle="pill" data-bs-target="#scene1" type="button" role="tab" aria-controls="scene1" aria-selected="false">Cash Saver</button>
+                <li class="nav-item">
+                    <button class="nav-link" id="pills-cash-saver-tab">Cash Saver</button>
                 </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="pills-consistent-investor-tab" data-bs-toggle="pill" data-bs-target="#scene2" type="button" role="tab" aria-controls="scene2" aria-selected="false">Consistent Investor</button>
+                <li class="nav-item">
+                    <button class="nav-link" id="pills-consistent-investor-tab">Consistent Investor</button>
                 </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="pills-beat-tab" data-bs-toggle="pill" data-bs-target="#scene3" type="button" role="tab" aria-controls="scene3" aria-selected="false">Beat The Market!</button>
+                <li class="nav-item">
+                    <button class="nav-link" id="pills-beat-tab">Beat The Market!</button>
                 </li>
             </ul>
         </nav>
 
-        <div class="tab-content" id="pills-tabContent">
-            <div class="tab-pane fade show active" id="intro" role="tabpanel" aria-labelledby="pills-saving-investing-tab">
-                <div id="intro-paragraph">
-                    INTRO
+        <div class="fade show" id="intro">
+            <div class="paragraph-container">
+                <h1 class="paragraph">Saving vs. Investing</h1>
+                <div class="paragraph">
+                    Let’s imagine that you have an extra $100 on the 1st and 15th of every month. 
+                    Of course you could spend it but what if you would like to delay gratification and grow your finances for that great beautiful tomorrow. 
+                    What will be your strategy? 
+                </div>
+                <div class="paragraph">
+                    One could argue that the most obvious strategy is to save it, hopefully not under your mattress but on a savings account. 
+                    Saving is definitely the least risky route, the dollar amount that you save will not decrease. 
+                    However, with the consistent increase in the cost of goods and services, the value of a dollar is decreasing with time. 
+                    Is savings the best strategy? What would be a better way to grow your finances?
+                </div>
+                <div class="paragraph">
+                    An alternative strategy to saving is investing. 
+                    Instead of putting away extra money in the savings account, the money can be used to purchase different types of investment that hopefully will appreciate with time. 
+                    The most common form of investment assets are stocks, bonds and mutual funds. 
+                    However, the value of investment assets can go up or down depending on market conditions. 
+                    The value of some of these assets can also go to $0, for example Enron. Investing is definitely a high risk activity, there is no guarantee that your money will grow. 
+                    However, historical data has proven that in the long term, most investment assets will go up in value.
+                </div>
+                <div class="paragraph">
+                    The fluctuation of value in investment assets motivates investors to try to beat the market by buying assets when their prices drop to hopefully sell them at a higher price. 
+                    But is waiting for the right time where the asset value has dropped the best strategy? 
+                    After all, how can one predict the movement of the market? Is it better to just be consistent and buy investment as soon as you have the extra cash?
+                </div>
+                <div class="paragraph">
+                    Through this narrative visualization, we will analyze three different strategies of building wealth; cash saving, consistent investing, and beating the market. 
+                    The analyses will be done in the time frame of 30 years. The investment asset used for the analysis is S&P500.
                 </div>
             </div>
 
-            <div class="tab-pane fade" id="scene1" role="tabpanel" aria-labelledby="pills-cash-saver-tab">
-                <div id="tooltip1" style="display: none;"></div>
+            <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab">
+                <li class="nav-item">
+                    <!-- Match the button id to button id in nav bar -->
+                    <button class="btn btn-primary" id="pills-cash-saver-tab">Next</button> 
+                </li>
+            </ul>
+        </div>
+
+        <div class="fade" id="scene1" style="display: none;">
+            <div class="paragraph-container">
+                <h1 class="paragraph">Cash Saver</h1>
+                <div class="plot-desc">
+                    A cash saver would put away the extra $100 earned on the 1st of 15th of every month into a savings account. 
+                    The graph below shows the growth of the savings account in the time span of 30 years. 
+                    Starting from $0, the savings account will grow to a respectable <span id="cashSaver-value">$$$$$</span>.
+                </div>
+            </div>
+
+            <div id="tooltip1" style="display: none;"></div>
+            <div class="svg-container">
                 <svg id="svg1" style="display: none;"></svg>
             </div>
 
-            <div class="tab-pane fade" id="scene2" role="tabpanel" aria-labelledby="pills-consistent-investor-tab">
-                <div id="tooltip2" style="display: none;"></div>
+            <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab">
+                <li class="nav-item">
+                    <!-- Match the button id to button id in nav bar -->
+                    <button class="btn btn-primary" id="pills-saving-investing-tab">Prev</button>
+                    <button class="btn btn-primary" id="pills-consistent-investor-tab">Next</button>
+                </li>
+            </ul>
+            
+        </div>
+
+        <div class="fade" id="scene2" style="display: none;">
+            <div class="paragraph-container">
+                <h1 class="paragraph">Consistent Investor</h1>
+                <div class="plot-desc">
+                    A consistent investor would immediately invest the extra $100 earned on the 1st of 15th of every month into S&P500, no matter if the market is high or low. 
+                    The graph below shows the growth of the investment account in the time span of 30 years. 
+                    Starting from $0, the investment account will grow to <span id="consistentInvestor-value">$$$$$</span>.
+                    Significantly higher than cash saver!
+                </div>
+            </div>
+
+            <div id="tooltip2" style="display: none;"></div>
+            <div class="svg-container">
                 <svg id="svg2" style="display: none;"></svg>
             </div>
 
-            <div class="tab-pane fade" id="scene3" role="tabpanel" aria-labelledby="pills-beat-tab">
-                <div id="tooltip3" style="display: none;"></div>
+            <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab">
+                <li class="nav-item">
+                    <!-- Match the button id to button id in nav bar -->
+                    <button class="btn btn-primary" id="pills-cash-saver-tab">Prev</button>
+                    <button class="btn btn-primary" id="pills-beat-tab">Next</button>
+                </li>
+            </ul>
+        </div>
+
+        <div class="fade" id="scene3" style="display: none;">
+            <div class="paragraph-container">
+                <h1 class="paragraph" id="beat-the-market">Beat the Market!</h1>
+                <div class="paragraph">
+                    Now it's your time to shine! You will earn $100 each month on the 1st and 15th. 
+                    The decision is in your hands wether you want to invest it right away or wait for the market to dip.
+                    The annotation on the graph shows a monumental event throughout the last 30 years where the market plunged significantly, use it to your advantage.
+                </div>
+                <div class="plot-desc">
+                    Point your cursor on the graph to view prices at different dates and click to invest. 
+                    View your purchase history and final account value at the table below.
+                    Good luck!
+                </div>
+                <div id="debug"></div>
+            </div>
+
+            <ul class="nav nav-pills mb-6 justify-content-center" style="margin-top: 5%;">
+                <li class="nav-item">
+                    <!-- Match the button id to button id in nav bar -->
+                    <div class="btn btn-success">Cash to Invest: <span id="cash-to-invest">$$$$</span></div>
+                    <div class="btn btn-warning">Final Value: <span id="final-value">$$$$</span></div>
+                </li>
+            </ul>
+
+            <div id="tooltip3" style="display: none;"></div>
+            <div class="svg-container">
                 <svg id="svg3" style="display: none;"></svg>
             </div>
+
+            <table class="table w-50 text-center" align="center">
+                <thead>
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Shares Qty</th>
+                        <th scope="col">Price/Share</th>
+                        <th scope="col">Total Invested</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
         </div>
     </body>
 
@@ -79,18 +214,54 @@
         var consistentInvestorDict = null // Object with key actual date and value market value
 
         async function init() {
-            // Clear page
+            // Clear plots
             d3.selectAll("svg").html("")
 
             // Only get data if it's not available already
             if (!data) {await getData()}
             
-            createInteractivePlot(cashSaver, cashSaverDict, "#svg1", "#tooltip1", "Cash Saver" , "Date", "Value - USD", [0.00,100000.00])
+            // Generating plots
+            createInteractivePlot(cashSaver, cashSaverDict, "#svg1", "#tooltip1", "Cash Saver" , "Date", "Value - USD", [0.00,80000.00])
             createInteractivePlot(consistentInvestor, consistentInvestorDict, "#svg2", "#tooltip2", "Consistent Investor" , "Date", "Value - USD", [0.00, 300000.00])
             createInteractivePlot(data, dataDict, "#svg3", "#tooltip3", "S&P500" , "Date", "Value - USD", [0.00,4000.00])
 
+            // Filling final account value
+            d3.select("#cashSaver-value").html(cashSaver[cashSaver.length-1].cashTotal.toLocaleString("en-US", {style:"currency", currency:"USD"}))
+            d3.select("#consistentInvestor-value").html(consistentInvestor[consistentInvestor.length-1].marketValue.toLocaleString("en-US", {style:"currency", currency:"USD"}))
+            
             // To make page interactive
             d3.select(window).on('resize', init)
+
+            userButtonNav()
+        }
+
+        // handle navigation
+        function userButtonNav() {
+            // Mapping button action the appropriate scene to activate
+            var buttonToSceneMap = {}
+            buttonToSceneMap["#pills-saving-investing-tab"] = "#intro"
+            buttonToSceneMap["#pills-cash-saver-tab"] = "#scene1"
+            buttonToSceneMap["#pills-consistent-investor-tab"] = "#scene2"
+            buttonToSceneMap["#pills-beat-tab"] = "#scene3"
+            const buttonIDs = Object.keys(buttonToSceneMap)
+            console.log(buttonIDs)
+
+            d3.selectAll("button").on("click", () => {
+                const buttonID = `#${d3.event.target.id}` // Add # to id
+                const sceneID = buttonToSceneMap[buttonID]
+
+                buttonIDs.forEach((button) => {
+                    // unshow all scene
+                    d3.select(buttonToSceneMap[button]).classed("show", false).style("display", "none")
+
+                    // remove pill highlight from button
+                    d3.select(button).classed("active", false)
+                }) 
+
+                // console.log(`${buttonID} ${sceneID}`)
+                d3.select(sceneID).classed("show", true).style("display", "block") // show the correct scene
+                d3.select(buttonID).classed("active", true) // pill highlight the clicked button
+            })
         }
 
         // Function to get data from .csv on the web and preprocess it to become data and dataDict
@@ -192,21 +363,20 @@
             const bodySize = document.querySelector("body").getBoundingClientRect()
 
             // Set svg canvas
-            const svgWidth = bodySize.width * .75
-            const svgHeight = svgWidth/2
+            const svgWidth = bodySize.width * .7
+            const svgHeight = svgWidth*.5
             const plotMargin = bodySize.width * .1
             const plotWidth = svgWidth - plotMargin*2
             const plotHeight = svgHeight - plotMargin*2
-            const plotFontSize = bodySize.width * .01
+            const plotFontSize = svgWidth * .01
 
             const svg3 = d3.select(svg)
             .attr("width", svgWidth)
             .attr("height", svgHeight)
             .style("display", "block")
-            .style("position", "absolute")  // needed for z index
+            // .style("position", "absolute")  // needed for z index
             .style("z-index", "99") // so that svg is always above everything else
-            .style("left", (bodySize.width - svgWidth)/2)
-            
+            // .style("left", (bodySize.width - svgWidth)/2)
 
             // Scale
             // Finding startDate and endDate of data
@@ -317,13 +487,13 @@
                 else {var toolTipLeft = d3.event.pageX - toolTipCoord.width/2}
 
                 d3.select(tooltip)
-                .style("top", svgCoord.y + plotMargin - toolTipCoord.height)
+                .style("top", svgCoord.y + plotMargin - toolTipCoord.height + window.scrollY)
                 .style("left", toolTipLeft) // Displaying tooltip div centered to cursor
                 .style("font-size", plotFontSize)   // Responsive font size
 
                 // debugging print
-                // d3.select("#tooltip1").style("display", "block")
-                // .html(`${d3.event.pageX} ${cursorXLocationRelativeToPlot} ${toolTipCoord.width}`)
+                // d3.select("#debug").style("display", "block")
+                // .html(`${d3.event.pageY} ${svgCoord.y}`)
 
                 // Create tooltip vertical line
                 const lineCircXCoord = d3.event.pageX - svgCoord.x + cursorToToolTipOffset // add offset so cursor is never on top of line, always on top of svg
