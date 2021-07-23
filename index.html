@@ -331,7 +331,7 @@
 
             // Set svg canvas
             const svgWidth = bodySize.width * .7
-            const svgHeight = svgWidth/2
+            const svgHeight = svgWidth*.5
             const plotMargin = bodySize.width * .1
             const plotWidth = svgWidth - plotMargin*2
             const plotHeight = svgHeight - plotMargin*2
@@ -459,8 +459,8 @@
                 .style("font-size", plotFontSize)   // Responsive font size
 
                 // debugging print
-                d3.select("#debug").style("display", "block")
-                .html(`${d3.event.pageY} ${svgCoord.y}`)
+                // d3.select("#debug").style("display", "block")
+                // .html(`${d3.event.pageY} ${svgCoord.y}`)
 
                 // Create tooltip vertical line
                 const lineCircXCoord = d3.event.pageX - svgCoord.x + cursorToToolTipOffset // add offset so cursor is never on top of line, always on top of svg
