@@ -111,7 +111,7 @@
             </ul>
         </div>
 
-        <div class="fade" id="scene1">
+        <div class="fade" id="scene1" style="display: none;">
             <div class="paragraph-container">
                 <h1 class="paragraph">Cash Saver</h1>
                 <div class="plot-desc">
@@ -136,7 +136,7 @@
             
         </div>
 
-        <div class="fade" id="scene2">
+        <div class="fade" id="scene2" style="display: none;">
             <div class="paragraph-container">
                 <h1 class="paragraph">Consistent Investor</h1>
                 <div class="plot-desc">
@@ -161,7 +161,7 @@
             </ul>
         </div>
 
-        <div class="fade" id="scene3">
+        <div class="fade" id="scene3" style="display: none;">
             <div class="paragraph-container">
                 <h1 class="paragraph" id="beat-the-market">Beat the Market!</h1>
                 <div class="paragraph">
@@ -176,6 +176,14 @@
                 </div>
                 <div id="debug"></div>
             </div>
+
+            <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" style="margin-top: 5%;">
+                <li class="nav-item">
+                    <!-- Match the button id to button id in nav bar -->
+                    <button class="btn btn-success">Cash to Invest: <span id="cash-to-invest">$$$$</span></button>
+                    <button class="btn btn-warning">Final Value: <span id="final-value">$$$$</span></button>
+                </li>
+            </ul>
 
             <div id="tooltip3" style="display: none;"></div>
             <div class="svg-container">
