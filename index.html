@@ -230,8 +230,8 @@
             createInteractivePlot(data, dataDict, "#svg3", "#tooltip3", "S&P500" , "Date", "Value - USD", [0.00,4000.00])
 
             // Filling final account value
-            d3.selectAll("#cashSaver-value, #final-value").html(cashSaver[cashSaver.length-1].cashTotal.toLocaleString("en-US", {style:"currency", currency:"USD"}))
-            d3.select("#consistentInvestor-value").html(consistentInvestor[consistentInvestor.length-1].marketValue.toLocaleString("en-US", {style:"currency", currency:"USD"}))
+            d3.selectAll("#cashSaver-value, #final-value").html(prettifyNumber(cashSaver[cashSaver.length-1].cashTotal))
+            d3.select("#consistentInvestor-value").html(prettifyNumber(consistentInvestor[consistentInvestor.length-1].marketValue))
             
             // To make page interactive
             d3.select(window).on('resize', init)
