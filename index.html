@@ -216,6 +216,7 @@
         // Global variables for purchase history
         var purchaseHistory = []
         var investedCash = 0.00
+        var totalSharesOwned = 0.00
 
         async function init() {
             // Clear plots
@@ -540,7 +541,8 @@
                 totalInvested: calculateCashToInvest(date)
             })
 
-            investedCash = calculateCashToInvest(date)
+            investedCash += calculateCashToInvest(date)
+            totalSharesOwned += calculateCashToInvest(date) / dataDict[formatDate(date)]
             console.log(purchaseHistory)
         }
 
