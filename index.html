@@ -483,7 +483,7 @@
 
                 // Create date & price tooltip
                 d3.select(tooltip).style("display", "block").style("position", "absolute")
-                .html(`${nextTradingDayPrice.toLocaleString("en-US", {style:"currency", currency:"USD"})} USD - ${prettifyDate(date)}`)
+                .html(`${prettifyNumber(nextTradingDayPrice)} USD - ${prettifyDate(date)}`)
 
                 let toolTipCoord = document.querySelector(tooltip).getBoundingClientRect()    // Get tooltip size
 
@@ -535,11 +535,13 @@
             // console.log(date)
             if (calculateCashToInvest(date) <= 0) {return}
 
+            let pricePerShare = findNextTradingDayPrice(formatDate(date), dataDict) ? findNextTradingDayPrice(formatDate(date), dataDict) : 0
+
             purchaseHistory.push({
                 date: prettifyDate(date),
-                sharesQty: (calculateCashToInvest(date) / dataDict[formatDate(date)]).toFixed(3),
-                pricePerShare: prettifyNumber(dataDict[formatDate(date)]),
-                totalInvested: calculateCashToInvest(date)
+                sharesQty: (calculateCashToInvest(date) / pricePerShare).toFixed(3),
+                pricePerShare: prettifyNumber(pricePerShare),
+                totalInvested: prettifyNumber(calculateCashToInvest(date))
             })
 
             investedCash += calculateCashToInvest(date)
