@@ -536,19 +536,29 @@
             if (calculateCashToInvest(date) <= 0) {return}
 
             let pricePerShare = findNextTradingDayPrice(formatDate(date), dataDict) ? findNextTradingDayPrice(formatDate(date), dataDict) : 0
+            let cashToInvest = calculateCashToInvest(date)
 
             purchaseHistory.push({
                 date: prettifyDate(date),
-                sharesQty: (calculateCashToInvest(date) / pricePerShare).toFixed(3),
+                sharesQty: (cashToInvest / pricePerShare).toFixed(3),
                 pricePerShare: prettifyNumber(pricePerShare),
-                totalInvested: prettifyNumber(calculateCashToInvest(date))
+                totalInvested: prettifyNumber(cashToInvest)
             })
 
-            investedCash += calculateCashToInvest(date)
-            totalSharesOwned += calculateCashToInvest(date) / dataDict[formatDate(date)]
-            console.log(purchaseHistory)
+            investedCash += cashToInvest
+            totalSharesOwned += cashToInvest / pricePerShare
+            // console.log(purchaseHistory)
 
             updateInvestmentHistoryTable()
+            updateFinalValue()
+        }
+
+        function updateFinalValue() {
+            const startEndDate = findStartEndDate(data[0].date, data[data.length-1].date)
+            const finalPricePerShare = dataDict[formatDate(startEndDate.endDate)]
+            const finalValue = finalPricePerShare * totalSharesOwned + cashSaverDict[formatDate(startEndDate.endDate)] - investedCash
+            d3.select("#final-value").html(prettifyNumber(finalValue))
+            // console.log(`${finalPricePerShare} ${totalSharesOwned} ${cashSaverDict[formatDate(startEndDate.endDate)]} ${investedCash}`)
         }
 
         function updateInvestmentHistoryTable() {
