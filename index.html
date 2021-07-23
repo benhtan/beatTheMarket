@@ -248,7 +248,7 @@
             buttonToSceneMap["#pills-consistent-investor-tab"] = "#scene2"
             buttonToSceneMap["#pills-beat-tab"] = "#scene3"
             const buttonIDs = Object.keys(buttonToSceneMap)
-            console.log(buttonIDs)
+            // console.log(buttonIDs)
 
             d3.selectAll("button").on("click", () => {
                 const buttonID = `#${d3.event.target.id}` // Add # to id
@@ -309,8 +309,8 @@
                 )
             })
 
-            console.log(data)
-            console.log(dataDict)
+            // console.log(data)
+            // console.log(dataDict)
             // console.log(dataDict[new Date(2000, 1, 1)])
 
             // Generating data for cashSaver and consistentInvestor
@@ -359,8 +359,8 @@
 
             // console.log(cashSaver)
             // console.log(cashSaverDict)
-            console.log(consistentInvestor)
-            console.log(consistentInvestorDict)
+            // console.log(consistentInvestor)
+            // console.log(consistentInvestorDict)
         }
 
         function createInteractivePlot(data = [], dataDict = {}, svg = "#svg", tooltip = "#tooltip", plotTitle = "Title", xAxisLabel = "X", yAxisLabel = "Y", yRange = [0,500]) {
@@ -521,16 +521,39 @@
                 }
 
                 // Showing cash to invest if on svg3 scene3
-                if (svg === "#svg3") {calculateCashToInvest(date)}
+                if (svg === "#svg3") {
+                    calculateCashToInvest(date)
+                    d3.select(svg).on("click", () => {storeInvestment(date)})
+                }
             })
             .on( "mouseout", () => {removeToolTip(tooltip)} )
         }
 
+        function storeInvestment(date) {
+            // console.log(date)
+            if (calculateCashToInvest(date) <= 0) {return}
+
+            purchaseHistory.push({
+                date: date,
+                sharesQty: calculateCashToInvest(date) / dataDict[formatDate(date)],
+                pricePerShare: dataDict[formatDate(date)],
+                totalInvested: calculateCashToInvest(date)
+            })
+
+            investedCash = calculateCashToInvest(date)
+            console.log(purchaseHistory)
+        }
+
         function calculateCashToInvest(date) {
             // cashSaver total cash at a certain date - invested cash
-            const cashToInvest = cashSaverDict[formatDate(date)] - investedCash
+            let cashToInvest = cashSaverDict[formatDate(date)] - investedCash
 
-            if (cashToInvest) {d3.select("#cash-to-invest").html(prettifyNumber(cashToInvest))}
+            if (cashToInvest) {
+                if (cashToInvest <= 0) {cashToInvest = 0}
+                d3.select("#cash-to-invest").html(prettifyNumber(cashToInvest))
+            }
+
+            return cashToInvest
         }
 
         function removeToolTip(tooltip) {
