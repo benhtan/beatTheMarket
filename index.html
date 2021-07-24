@@ -9,7 +9,7 @@
 
     <style>
         svg {
-            /* border: 1px solid black; */
+            border: 1px solid black;
         }
 
         body {
@@ -225,6 +225,22 @@
         var purchaseHistory = []
         var investedCash = 0.00
         var totalSharesOwned = 0.00
+
+        // Significant market events
+        const significantMarketEvents = [
+            {desc: "Early 1990s Recession", date: new Date("September 6, 1990")},
+            {desc: "Dot-com Bubble", date: new Date("March 10, 2000")},
+            {desc: "September 11 Attack", date: new Date("September 11, 2001")},
+            {desc: "2002 Stock Market Downturn", date: new Date("October 9, 2002")},
+            {desc: "2007 Bear Market", date: new Date("October 11, 2007")},
+            {desc: "2008 Financial Crisis", date: new Date("September 16, 2008")},
+            {desc: "2010 Flash Crash", date: new Date("May 6, 2010")},
+            {desc: "2011 Market Fall", date: new Date("August 1, 2011")},
+            {desc: "2015 Stock Market Selloff", date: new Date("August 18, 2015")},
+            {desc: "2018 Cryptocurrency Crash", date: new Date("September 20, 2018")},
+            {desc: "2020 COVID-19 Crash", date: new Date("February 24, 2020")},
+        ]
+        // console.log(significantMarketEvents)
 
         async function init() {
             // Clear plots
@@ -470,6 +486,26 @@
             .append("circle")
             .attr("id", `toolTipCircle${tooltip.substring(1)}`)
 
+            // Significant event annotation
+            var color = d3.scaleOrdinal()
+                        .domain([0, significantMarketEvents.length])
+                        .range(d3.schemeSet2);
+            // console.log(color)
+
+            // Centering annotation in svg in Y direction
+            const distanceYBetweenAnnotation = plotFontSize*3
+            const annotationYMargin = 0.5* (svgHeight - (significantMarketEvents.length - 1)*distanceYBetweenAnnotation)
+
+            d3.select(svg).selectAll("circle")
+            .data(significantMarketEvents)
+            .enter()
+            .append("circle")
+            .attr("cx", plotMargin*1.2 + plotWidth)
+            .attr("cy", function(d,i) {return annotationYMargin + i*distanceYBetweenAnnotation}) // 100 is where the first dot appears. 25 is the distance between dots
+            .attr("r", plotWidth*.005)
+            .style("fill", function(d, i) {return color(i)})
+
+
             // Tool tip
             d3.selectAll(svg, tooltip, `#toolTipLine${tooltip.substring(1)}`, `#toolTipCircle${tooltip.substring(1)}`)
             .on("mousemove", () => {
@@ -526,7 +562,7 @@
                     d3.select(`#toolTipCircle${tooltip.substring(1)}`)
                     .attr("cx", lineCircXCoord)
                     .attr("cy", yScale( nextTradingDayPrice ) + plotMargin)
-                    .attr("r", 4)
+                    .attr("r", plotWidth*.005)
                 }
 
                 // Showing cash to invest if on svg3 scene3
