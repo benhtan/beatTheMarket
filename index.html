@@ -9,7 +9,7 @@
 
     <style>
         svg {
-            /* border: 1px solid lightblue; */
+            border: 1px solid grey;
         }
 
         body {
@@ -397,8 +397,8 @@
             const svgWidth = bodySize.width * 0.6
             const svgHeight = svgWidth*.5
             // const plotMargin = bodySize.width * .15
-            const topMargin = bodySize.width * .05
-            const bottomMargin = topMargin
+            const topMargin = bodySize.width * .03
+            const bottomMargin = bodySize.width * .03
             const leftMargin = bodySize.width * .06
             const rightMargin = bodySize.width * .12
             const plotWidth = svgWidth - leftMargin - rightMargin
@@ -477,7 +477,7 @@
             d3.select(svg)
             .append('g')
             .style("font-size", plotFontSize*1.3) // Responsive font size
-            .attr('transform', `translate(${leftMargin + plotWidth/2},${plotHeight + topMargin + bottomMargin/2})`) // Specify where the label is
+            .attr('transform', `translate(${leftMargin + plotWidth/2},${plotHeight + topMargin + bottomMargin*.7})`) // Specify where the label is
             .append('text')
             .attr('text-anchor', 'middle')
             .text(xAxisLabel)
@@ -501,12 +501,13 @@
             // Centering annotation in svg in Y direction
             const distanceYBetweenAnnotation = plotFontSize*2
             const annotationYMargin = 0.5* (svgHeight - (significantMarketEvents.length - 1)*distanceYBetweenAnnotation)
+            const annotationXLocation = leftMargin + plotWidth + rightMargin*.2
 
             d3.select(svg).selectAll("dots")
             .data(significantMarketEvents)
             .enter()
             .append("circle")
-            .attr("cx", leftMargin*1.2 + plotWidth)
+            .attr("cx", annotationXLocation)
             .attr("cy", function(d, i) {return annotationYMargin + i*distanceYBetweenAnnotation}) // 100 is where the first dot appears. 25 is the distance between dots
             .attr("r", plotWidth*.005)
             .style("fill", function(d, i) {return color(i)})
@@ -515,7 +516,7 @@
             .data(significantMarketEvents)
             .enter()
             .append("text")
-            .attr("x", leftMargin*1.2 + plotWidth + plotFontSize)
+            .attr("x", annotationXLocation + plotFontSize)
             .attr("y", function(d, i) {return annotationYMargin + i*distanceYBetweenAnnotation})
             .text(function(d){ return d.desc})
             .attr("text-anchor", "left")
