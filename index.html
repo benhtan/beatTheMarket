@@ -598,12 +598,14 @@
                     .attr("fill", "none")
                     .attr("stroke", "black")
                     .attr("stroke-width", .5)
+                    .style("display", "block")
                     
                     // Show circle
                     d3.select(`#toolTipCircle${tooltip.substring(1)}`)
                     .attr("cx", lineCircXCoord)
                     .attr("cy", yScale( nextTradingDayPrice ) + topMargin)
                     .attr("r", plotWidth*.01)
+                    .style("display", "block")
                 }
 
                 // Showing cash to invest if on svg3 scene3
@@ -678,11 +680,11 @@
         function removeToolTip(tooltip) {
             // Remove line
             d3.select(`#toolTipLine${tooltip.substring(1)}`)
-                    .attr("stroke-width", 0)
+            .style("display", "none")
 
             // Remove circle
             d3.select(`#toolTipCircle${tooltip.substring(1)}`)
-            .attr("r", 0)
+            .style("display", "none")
 
             // Remove details
             d3.select(tooltip).style("display", "none")
