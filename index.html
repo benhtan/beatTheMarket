@@ -604,7 +604,10 @@
                     d3.select(`#toolTipCircle${tooltip.substring(1)}`)
                     .attr("cx", lineCircXCoord)
                     .attr("cy", yScale( nextTradingDayPrice ) + topMargin)
-                    .attr("r", plotWidth*.01)
+                    .attr("r", plotWidth*.015)
+                    .attr("stroke", "blue")
+                    .attr("stroke-width", plotWidth*.005)
+                    .attr("fill", "none")
                     .style("display", "block")
                 }
 
