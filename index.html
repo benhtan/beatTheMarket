@@ -50,6 +50,11 @@
             margin-bottom: 0px;
             text-align: justify;
         }
+
+        #consistentInvestor-value, #cashSaver-value {
+            font-weight: bold;
+            color: brown;
+        }
     </style>
 
     <body onload='init()'>
@@ -173,18 +178,17 @@
                     Point your cursor on the graph to view prices at different dates and click to invest. 
                     The green box below will show how much cash you have to invest at any point in the graph.
                     View your investment history and final account value below.
-                    Can you Beat the Market? Good luck!
+                    Can you Beat the Market? Good luck! Value to beat is <span id="consistentInvestor-value">$</span>!
                 </div>
                 <div id="debug"></div>
             </div>
 
-            <ul class="nav nav-pills mb-6 justify-content-center" style="margin-top: 5%;">
+            <ul class="nav nav-pills mb-6 justify-content-center" style="margin-top: 2%;">
                 <li class="nav-item">
                     <!-- Match the button id to button id in nav bar -->
                     <div class="btn btn-success">Cash to Invest: <span id="cash-to-invest">$</span></div>
                     <div class="btn btn-warning">
-                        Final Value: <span id="final-value">$</span> 
-                        (to beat: <span id="consistentInvestor-value">$</span>)
+                        Final Value: <span id="final-value">$</span>
                     </div>
                 </li>
             </ul>
@@ -376,7 +380,7 @@
             const svgHeight = svgWidth*.5
             const plotMargin = bodySize.width * .1
             const plotWidth = svgWidth - plotMargin*2
-            const plotHeight = svgHeight - plotMargin*2
+            const plotHeight = svgHeight - plotMargin*1.7
             const plotFontSize = svgWidth * .01
 
             const svg3 = d3.select(svg)
