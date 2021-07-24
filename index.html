@@ -548,7 +548,7 @@
             .style("fill", function(d, i) {return color(i)})
 
             // Tool tip
-            d3.selectAll(svg, tooltip, `#toolTipLine${tooltip.substring(1)}`, `#toolTipCircle${tooltip.substring(1)}`)
+            d3.selectAll(`${svg}, ${tooltip}, #toolTipLine${tooltip.substring(1)}, #toolTipCircle${tooltip.substring(1)}, path, circle`)
             .on("mousemove", () => {
                 removeToolTip(tooltip)
                 // Get size and location of svg
@@ -603,7 +603,7 @@
                     d3.select(`#toolTipCircle${tooltip.substring(1)}`)
                     .attr("cx", lineCircXCoord)
                     .attr("cy", yScale( nextTradingDayPrice ) + topMargin)
-                    .attr("r", plotWidth*.005)
+                    .attr("r", plotWidth*.01)
                 }
 
                 // Showing cash to invest if on svg3 scene3
