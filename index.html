@@ -9,7 +9,7 @@
 
     <style>
         svg {
-            border: 1px solid lightblue;
+            /* border: 1px solid lightblue; */
         }
 
         body {
@@ -394,11 +394,15 @@
             const bodySize = document.querySelector("body").getBoundingClientRect()
 
             // Set svg canvas
-            const svgWidth = bodySize.width * 0.7
+            const svgWidth = bodySize.width * 0.6
             const svgHeight = svgWidth*.5
-            const plotMargin = bodySize.width * .15
-            const plotWidth = svgWidth - plotMargin*2
-            const plotHeight = svgHeight - plotMargin*1.7
+            // const plotMargin = bodySize.width * .15
+            const topMargin = bodySize.width * .05
+            const bottomMargin = topMargin
+            const leftMargin = bodySize.width * .06
+            const rightMargin = bodySize.width * .12
+            const plotWidth = svgWidth - leftMargin - rightMargin
+            const plotHeight = svgHeight - topMargin - bottomMargin
             const plotFontSize = svgHeight * .02
 
             const svg3 = d3.select(svg)
@@ -428,7 +432,7 @@
 
             d3.select(svg)
             .append("g")
-            .attr("transform", `translate(${plotMargin},${plotMargin})`)
+            .attr("transform", `translate(${leftMargin},${topMargin})`)
             .append("path")
             .datum(data)
             .attr("fill", "none")
@@ -440,7 +444,7 @@
             d3.select(svg)
             .append('g')
             .style("font-size", plotFontSize*1.3) // Responsive font size
-            .attr('transform', `translate(${plotMargin + plotWidth/2},${plotMargin*0.6})`) // Specify where the label is
+            .attr('transform', `translate(${leftMargin + plotWidth/2},${topMargin*0.6})`) // Specify where the label is
             .append('text')
             .attr('text-anchor', 'middle')
             .text(plotTitle)
@@ -448,7 +452,7 @@
             // Y tickmark
             d3.select(svg)
             .append("g")
-            .attr("transform", `translate(${plotMargin},${plotMargin})`)
+            .attr("transform", `translate(${leftMargin},${topMargin})`)
             .call( d3.axisLeft(yScale) )
             .style("font-size", plotFontSize) // Responsive font size
 
@@ -456,7 +460,7 @@
             d3.select(svg)
             .append('g')
             .style("font-size", plotFontSize*1.3) // Responsive font size
-            .attr('transform', `translate(${plotMargin*0.7},${(plotHeight/2) + plotMargin})`) // Specify where the label is
+            .attr('transform', `translate(${leftMargin*0.3},${(plotHeight/2) + topMargin})`) // Specify where the label is
             .append('text')
             .attr('text-anchor', 'middle')
             .attr('transform', 'rotate(-90)')
@@ -465,7 +469,7 @@
             // X tickmark
             d3.select(svg)
             .append("g")
-            .attr("transform", `translate(${plotMargin},${plotHeight + plotMargin})`)
+            .attr("transform", `translate(${leftMargin},${plotHeight + topMargin})`)
             .call( d3.axisBottom(xScale).tickFormat(d3.timeFormat("%Y")) )
             .style("font-size", plotFontSize)   // Responsive font size
 
@@ -473,7 +477,7 @@
             d3.select(svg)
             .append('g')
             .style("font-size", plotFontSize*1.3) // Responsive font size
-            .attr('transform', `translate(${plotMargin + plotWidth/2},${plotHeight + plotMargin*1.3})`) // Specify where the label is
+            .attr('transform', `translate(${leftMargin + plotWidth/2},${plotHeight + topMargin + bottomMargin/2})`) // Specify where the label is
             .append('text')
             .attr('text-anchor', 'middle')
             .text(xAxisLabel)
@@ -495,14 +499,14 @@
             // console.log(color)
 
             // Centering annotation in svg in Y direction
-            const distanceYBetweenAnnotation = plotFontSize*3
+            const distanceYBetweenAnnotation = plotFontSize*2
             const annotationYMargin = 0.5* (svgHeight - (significantMarketEvents.length - 1)*distanceYBetweenAnnotation)
 
             d3.select(svg).selectAll("dots")
             .data(significantMarketEvents)
             .enter()
             .append("circle")
-            .attr("cx", plotMargin*1.2 + plotWidth)
+            .attr("cx", leftMargin*1.2 + plotWidth)
             .attr("cy", function(d, i) {return annotationYMargin + i*distanceYBetweenAnnotation}) // 100 is where the first dot appears. 25 is the distance between dots
             .attr("r", plotWidth*.005)
             .style("fill", function(d, i) {return color(i)})
@@ -511,7 +515,7 @@
             .data(significantMarketEvents)
             .enter()
             .append("text")
-            .attr("x", plotMargin*1.2 + plotWidth + plotFontSize)
+            .attr("x", leftMargin*1.2 + plotWidth + plotFontSize)
             .attr("y", function(d, i) {return annotationYMargin + i*distanceYBetweenAnnotation})
             .text(function(d){ return d.desc})
             .attr("text-anchor", "left")
@@ -522,8 +526,8 @@
             .data(significantMarketEvents)
             .enter()
             .append("circle")
-            .attr("cx", function(d, i) {return xScale(d.date) + plotMargin})
-            .attr("cy", function(d, i) {return yScale( findNextTradingDayPrice(formatDate(d.date), dataDict) ) + plotMargin}) // 100 is where the first dot appears. 25 is the distance between dots
+            .attr("cx", function(d, i) {return xScale(d.date) + leftMargin})
+            .attr("cy", function(d, i) {return yScale( findNextTradingDayPrice(formatDate(d.date), dataDict) ) + topMargin}) // 100 is where the first dot appears. 25 is the distance between dots
             .attr("r", plotWidth*.005)
             .style("fill", function(d, i) {return color(i)})
 
@@ -541,7 +545,7 @@
                 const cursorToToolTipOffset = 2 // in pixel. add offset so cursor is never on top of line, always on top of svg
 
                 // Find relation between cursor location and plot data
-                let cursorXLocationRelativeToPlot = d3.event.pageX - svgCoord.x - plotMargin + cursorToToolTipOffset // cursor location will be 0 and Y axis of plot
+                let cursorXLocationRelativeToPlot = d3.event.pageX - svgCoord.x - leftMargin + cursorToToolTipOffset // cursor location will be 0 and Y axis of plot
                 let date = xScale.invert(parseInt(cursorXLocationRelativeToPlot))
                 let nextTradingDayPrice = findNextTradingDayPrice(formatDate(date), dataDict) ? findNextTradingDayPrice(formatDate(date), dataDict) : 0 // if statement to remove toLocaleString error when date is outside of data range
 
@@ -552,12 +556,12 @@
                 let toolTipCoord = document.querySelector(tooltip).getBoundingClientRect()    // Get tooltip size
 
                 // Figuring out where tooltip div left should be. Tooltip div should not go outside of plot in x direction
-                if (cursorXLocationRelativeToPlot - cursorToToolTipOffset - toolTipCoord.width/2 <= 0) {var toolTipLeft = plotMargin + svgCoord.x + cursorToToolTipOffset}
-                else if (cursorXLocationRelativeToPlot - cursorToToolTipOffset + toolTipCoord.width/2 >= plotWidth) {var toolTipLeft = plotMargin + plotWidth + svgCoord.x + cursorToToolTipOffset - toolTipCoord.width}
+                if (cursorXLocationRelativeToPlot - cursorToToolTipOffset - toolTipCoord.width/2 <= 0) {var toolTipLeft = leftMargin + svgCoord.x + cursorToToolTipOffset}
+                else if (cursorXLocationRelativeToPlot - cursorToToolTipOffset + toolTipCoord.width/2 >= plotWidth) {var toolTipLeft = leftMargin + plotWidth + svgCoord.x + cursorToToolTipOffset - toolTipCoord.width}
                 else {var toolTipLeft = d3.event.pageX - toolTipCoord.width/2}
 
                 d3.select(tooltip)
-                .style("top", svgCoord.y + plotMargin - toolTipCoord.height + window.scrollY)
+                .style("top", svgCoord.y + topMargin - toolTipCoord.height + window.scrollY)
                 .style("left", toolTipLeft) // Displaying tooltip div centered to cursor
                 .style("font-size", plotFontSize)   // Responsive font size
 
@@ -567,7 +571,7 @@
 
                 // Create tooltip vertical line
                 const lineCircXCoord = d3.event.pageX - svgCoord.x + cursorToToolTipOffset // add offset so cursor is never on top of line, always on top of svg
-                var toolTipLine = d3.line()([[lineCircXCoord, plotMargin], [lineCircXCoord, plotHeight + plotMargin]])
+                var toolTipLine = d3.line()([[lineCircXCoord, topMargin], [lineCircXCoord, plotHeight + topMargin]])
                 if (cursorXLocationRelativeToPlot < 0 || cursorXLocationRelativeToPlot > plotWidth) {
                     removeToolTip(tooltip)
                 }
@@ -582,7 +586,7 @@
                     // Show circle
                     d3.select(`#toolTipCircle${tooltip.substring(1)}`)
                     .attr("cx", lineCircXCoord)
-                    .attr("cy", yScale( nextTradingDayPrice ) + plotMargin)
+                    .attr("cy", yScale( nextTradingDayPrice ) + topMargin)
                     .attr("r", plotWidth*.005)
                 }
 
